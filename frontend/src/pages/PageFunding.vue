@@ -32,14 +32,16 @@
       <div v-if="invoice != null">
         <ParagraphDefault>
           <I18nT
-            :keypath="
-              usedDate != null
-                ? 'funding.textUsed'
-                : funded
-                  ? 'funding.textFunded'
-                  : 'funding.invoiceText'
-            "
+            v-if="funded || usedDate != null"
+            :keypath="usedDate != null ? 'funding.textUsed' : 'funding.textFunded'"
           >
+            <template #amountAndUnit>
+              <strong v-if="invoiceAmount != null" class="inline-block">
+                {{ t('funding.amountAndUnit', { amount: formatNumber(invoiceAmount / (100 * 1000 * 1000), 8, 8)}) }}
+              </strong>
+            </template>
+          </I18nT>
+          <I18nT v-else keypath="funding.invoiceText">
             <template #amount>
               <strong>{{ invoiceAmount }}</strong>
             </template>
@@ -213,7 +215,7 @@
             <SatsAmountSelector
               :amount-sats="amount"
               :rate-btc-eur="rateBtcEur"
-              :min="500"
+              :min="210"
               :disabled="creatingInvoice"
               @update="amount = $event"
             />
@@ -261,7 +263,7 @@
           :funded-date="cardFundedDate"
           :used-date="usedDate"
           :shared="shared"
-          :amount="amount || undefined"
+          :amount="invoiceAmount || amount || undefined"
           :note="note || undefined"
           :viewed="viewed"
           :url="previewPageUrl"
