@@ -1,6 +1,6 @@
 <template>
   <div class="mb-1 print:hidden max-w-md w-full m-auto">
-    <BackLink class="p-4" :to="{ name: 'home' }" />
+    <BackLink class="p-4" :to="{ name: 'home', params: { lang: route.params.lang } }" />
     <div
       v-for="userWarning in userWarnings"
       :key="userWarning"
@@ -15,7 +15,7 @@
         </HeadlineDefault>
         <ButtonDefault
           variant="no-border"
-          class="text-xs text-black underline hover:no-underline active:no-underline disabled:no-underline"
+          class="text-xs !text-black underline hover:no-underline active:no-underline disabled:no-underline"
           :disabled="reloadingStatusForCards"
           @click="reloadStatusForCards()"
         >
@@ -70,14 +70,14 @@
               :shared="shared"
               :amount="amount || undefined"
               :note="note || undefined"
-              :url="urlPreview"
+              :url="status === 'setFunding' ? setFundingHref : urlPreview"
               :viewed="viewed"
             />
           </li>
         </ul>
       </div>
     </div>
-    <div class="p-4 mb-1 max-w-md">
+    <div class="p-4 mb-3">
       <HeadlineDefault level="h2">
         {{ t('cards.settings.headline') }}
       </HeadlineDefault>
@@ -141,24 +141,18 @@
         {{ t('cards.settings.cardQrCodeLogo.noLogo') }}
       </label>
     </div>
-    <div class="px-4 my-1 text-sm">
-      <ButtonDefault
-        @click="printCards()"
-      >
-        {{ t('cards.buttonPrint') }}
-      </ButtonDefault>
-      &nbsp;
-      <ButtonDefault
-        variant="no-border"
-        @click="downloadZip()"
-      >
-        {{ t('cards.buttonDownloadPngs') }}
-      </ButtonDefault>
+    <div class="px-4">
+      <HeadlineDefault level="h2">
+        {{ t('cards.actions.headline') }}
+      </HeadlineDefault>
     </div>
-    <div class="px-4 my-2">
+    <div class="px-4 my-5">
+      <HeadlineDefault level="h3" class="mb-2">
+        Speichern <!-- {{ t('cards.actions.print.headline') }} -->
+      </HeadlineDefault>
       <label class="block mb-1">
         <span class="block">
-          {{ t('cards.settings.setName') }}:
+          {{ t('cards.actions.setName') }}:
         </span>
         <input
           v-model="settings.setName"
@@ -166,52 +160,91 @@
           class="w-full border my-1 px-3 py-2 focus:outline-none"
         >
       </label>
-      <ButtonDefault class="text-sm" @click="saveCardsSet">
-        {{ t('cards.buttonSaveCardsSet') }}
+      <ButtonDefault class="text-sm min-w-[170px]" @click="saveCardsSet">
+        {{ t('cards.actions.buttonSaveCardsSet') }}
         <i v-if="isSaved" class="bi bi-check-square-fill ml-1" />
         <i v-if="showSaveWarning" class="bi bi-exclamation-square ml-1" />
       </ButtonDefault>
       &nbsp;
+      <br class="xs:hidden">
       <ButtonDefault
         v-if="isSaved"
-        variant="outline"
+        variant="no-border"
         class="text-sm"
         @click="deleteCardsSet"
       >
-        {{ t('cards.buttonDeleteCardsSet') }}
+        {{ t('cards.actions.buttonDeleteCardsSet') }}
       </ButtonDefault>
     </div>
-    <div
-      v-if="cards.length > 0"
-      class="p-4 max-w-md"
-    >
+    <div class="px-4 my-5">
+      <HeadlineDefault level="h3" class="mb-2">
+        Drucken <!-- {{ t('cards.actions.print.headline') }} -->
+      </HeadlineDefault>
+      <ButtonDefault
+        class="text-sm min-w-[170px]"
+        @click="printCards()"
+      >
+        {{ t('cards.actions.buttonPrint') }}
+      </ButtonDefault>
+      &nbsp;
+      <br class="xs:hidden">
+      <ButtonDefault
+        variant="no-border"
+        class="text-sm"
+        @click="downloadZip()"
+      >
+        {{ t('cards.actions.buttonDownloadPngs') }}
+      </ButtonDefault>
+    </div>
+    <div class="px-4 my-5">
+      <HeadlineDefault level="h3" class="mb-2">
+        Alle aufladen <!-- {{ t('cards.actions.print.headline') }} -->
+      </HeadlineDefault>
+      <ParagraphDefault class="text-sm">
+        {{ t('cards.actions.setFunding.intro') }}
+      </ParagraphDefault>
+      <div class="mb-2">
+        {{ t('cards.actions.setFunding.label') }}:
+      </div>
+      <ButtonWithTooltip
+        class="text-sm min-w-[170px]"
+        :href="setFundingHref"
+        :disabled="cardsStatusList.length !== 0"
+        :tooltip="cardsStatusList.length !== 0 ? t('cards.actions.setFunding.disabledReason') : undefined"
+      >
+        {{ t('cards.actions.setFunding.button') }}
+      </ButtonWithTooltip>
+    </div>
+  </div>
+  <div class="mb-1 p-4 print:hidden max-w-md w-full m-auto">
+    <HeadlineDefault level="h2">
+      {{ t('cards.cards.headline') }}
+    </HeadlineDefault>
+    <div v-if="cards.length > 0">
       <label class="block mb-2">
         <span class="block">
-          {{ t('cards.filterLabel') }}
+          {{ t('cards.cards.filterLabel') }}
         </span>
         <select
           v-model="cardsFilter"
           class="w-full border my-1 px-3 py-2"
         >
           <option value="">
-            {{ t('cards.filter.all') }} ({{ cards.length }})
+            {{ t('cards.cards.filter.all') }} ({{ cards.length }})
           </option>
           <option value="unfunded">
-            {{ t('cards.filter.unfunded') }} ({{ cards.filter(card => card.status === 'unfunded').length }})
+            {{ t('cards.cards.filter.unfunded') }} ({{ cards.filter(card => card.status === 'unfunded').length }})
           </option>
           <option value="funded">
-            {{ t('cards.filter.funded') }} ({{ cards.filter(card => card.status === 'funded').length }})
+            {{ t('cards.cards.filter.funded') }} ({{ cards.filter(card => card.status === 'funded').length }})
           </option>
           <option value="used">
-            {{ t('cards.filter.used') }} ({{ cards.filter(card => card.status === 'used').length }})
+            {{ t('cards.cards.filter.used') }} ({{ cards.filter(card => card.status === 'used').length }})
           </option>
         </select>
       </label>
     </div>
-    <div
-      v-if="userErrorMessage != null"
-      class="p-4"
-    >
+    <div v-if="userErrorMessage != null">
       <p class="text-red-500 text-align-center" dir="ltr">
         {{ userErrorMessage }}
       </p>
@@ -252,9 +285,9 @@
             class="absolute w-full h-full"
             :class="{ 'opacity-50': card.status === 'used' }"
           >
-            <a :href="card.urlPreview">
+            <a :href="card.status === 'setFunding' ? setFundingHref : card.urlPreview">
               <div
-                class="absolute top-7 bottom-7 w-auto h-auto aspect-square"
+                class="absolute top-7 bottom-7 left-3 w-auto h-auto aspect-square"
                 :class="{ 'opacity-50 blur-sm': card.status === 'used' }"
               >
                 <svg
@@ -328,7 +361,7 @@
             <span class="m-auto">{{ card.amount }} sats</span>
           </div>
           <div
-            v-else-if="(card.status === 'invoice' || card.status === 'lnurlp')"
+            v-else-if="(card.status === 'invoice' || card.status === 'lnurlp' || card.status === 'setFunding')"
             class="absolute flex right-0.5 top-0.5 px-2 py-1 rounded-full bg-grey text-white text-xs break-anywhere print:hidden"
           >
             <span
@@ -344,6 +377,13 @@
               class="m-auto"
             >
               {{ t('cards.status.labelPendingFunding') }}
+            </span>
+            <span
+              v-else-if="card.status === 'setFunding'"
+              :title="card.status"
+              class="m-auto"
+            >
+              {{ t('cards.status.labelPendingSetFunding') }}
             </span>
           </div>
         </div>
@@ -372,6 +412,7 @@ import LinkDefault from '@/components/typography/LinkDefault.vue'
 import ParagraphDefault from '@/components/typography/ParagraphDefault.vue'
 import ButtonDefault from '@/components/ButtonDefault.vue'
 import CardStatusComponent from '@/components/CardStatus.vue'
+import ButtonWithTooltip from '@/components/ButtonWithTooltip.vue'
 import {
   type Settings,
   initialSettings,
@@ -384,6 +425,7 @@ import svgToPng from '@/modules/svgToPng'
 import { BACKEND_API_ORIGIN } from '@/constants'
 import { encodeLnurl } from '@root/modules/lnurlHelpers'
 import { useSeoHelpers } from '@/modules/seoHelpers'
+import hashSha256 from '@/modules/hashSha256'
 
 const route = useRoute()
 const router = useRouter()
@@ -408,7 +450,7 @@ const saveCardsSet = () => {
   if (setId.value == null) {
     return
   }
-  if (!hasBeenSaved.value && !confirm(t('cards.saveSetConfirm'))) {
+  if (!hasBeenSaved.value && !confirm(t('cards.actions.saveSetConfirm'))) {
     return
   }
   saveCardsSetToLocalStorage({
@@ -422,11 +464,11 @@ const deleteCardsSet = () => {
   if (setId.value == null) {
     return
   }
-  if (!confirm(t('cards.deleteSetConfirm'))) {
+  if (!confirm(t('cards.actions.deleteSetConfirm'))) {
     return
   }
   deleteCardsSetFromLocalStorage(setId.value)
-  router.push({ name: 'home' })
+  router.push({ name: 'home', params: { lang: route.params.lang } })
 }
 
 const currentSetUrl = ref<string>(document.location.href)
@@ -513,6 +555,15 @@ const showSaveWarning = computed(() => {
   return false
 })
 
+const setFundingHref = computed(() => router.resolve({
+  name: 'set-funding',
+  params: {
+    lang: route.params.lang,
+    setId: route.params.setId,
+    settings: route.params.settings,
+  },
+}).href)
+
 ///////////////////////
 // CARDS
 //
@@ -555,13 +606,29 @@ onBeforeMount(() => {
   }
 })
 
+const getCardUrl = (lnurlEncoded: string, landingPageType: 'landing' | 'preview') => {
+  const routeHref = router.resolve({ name: landingPageType, params: { lang: route.params.lang }, query: { lightning: lnurlEncoded.toUpperCase() } }).href
+  if (landingPageType === 'preview') {
+    return routeHref
+  }
+  return `${location.protocol}//${location.host}${routeHref}`
+}
+
+const getQrCodeForUrl = (url: string) => 
+  new QRCode({
+        content: url,
+        padding: 0,
+        join: true,
+        xmlDeclaration: false,
+        container: 'none',
+      }).svg()
+
 const generateNewCardSkeleton = async (index: number) => {
   const cardHash = await hashSha256(`${setId.value}/${index}`)
   const lnurlDecoded = `${BACKEND_API_ORIGIN}/api/lnurl/${cardHash}`
   const lnurlEncoded = encodeLnurl(lnurlDecoded)
-  const routeHref = router.resolve({ name: 'landing', query: { lightning: lnurlEncoded.toUpperCase() } }).href
-  const url = `${location.protocol}//${location.host}${routeHref}`
-  const urlPreview = router.resolve({ name: 'preview', query: { lightning: lnurlEncoded.toUpperCase() } }).href
+  const url = getCardUrl(lnurlEncoded, 'landing')
+  const urlPreview = getCardUrl(lnurlEncoded, 'preview')
   return {
     cardHash,
     url,
@@ -575,13 +642,7 @@ const generateNewCardSkeleton = async (index: number) => {
     createdDate: null,
     viewed: false,
     shared: false,
-    qrCodeSvg: new QRCode({
-        content: url,
-        padding: 0,
-        join: true,
-        xmlDeclaration: false,
-        container: 'none',
-      }).svg(),
+    qrCodeSvg: getQrCodeForUrl(url),
   }
 }
 
@@ -589,6 +650,10 @@ const reloadingStatusForCards = ref(false)
 const reloadStatusForCards = throttle(async () => {
   reloadingStatusForCards.value = true
   await Promise.all(cards.value.map(async (card) => {
+    // the URLs need to change in case the language was switched
+    card.url = getCardUrl(card.lnurl, 'landing')
+    card.urlPreview = getCardUrl(card.lnurl, 'preview')
+    card.qrCodeSvg = getQrCodeForUrl(card.url)
     const { status, amount, shared, message, fundedDate, createdDate, card: cardData } = await loadCardStatus(card.cardHash, 'cards')
     if (status === 'error') {
       card.status = 'error'
@@ -647,17 +712,6 @@ const printCards = () => {
   wasPrintedOrDownloaded.value = true
 }
 
-const hashSha256 = async (message: string) => {
-  if (crypto.subtle == null && import.meta.env.MODE === 'development') {
-    return message.replace(/\//g, '-').replace(/-/g,'')
-  }
-  const msgUint8 = new TextEncoder().encode(message)
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8)
-  const hashArray = Array.from(new Uint8Array(hashBuffer))
-  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
-  return hashHex
-}
-
 ///////////////////////
 // STATUS
 //
@@ -670,6 +724,7 @@ const fundedCardsTotalAmount = computed(() => fundedCards.value.reduce((total, {
 const statusOrder: Record<CardStatus['status'], number> = {
   invoice: 0,
   lnurlp: 0,
+  setFunding: 0,
   funded: 1,
   used: 2,
   unfunded: 3,

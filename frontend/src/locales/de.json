@@ -17,9 +17,11 @@
     "titlePreview": "Vorschau – Hol dir deine Bitcoin",
     "introGreeting": "Hi!",
     "introMessageReceiveBtc": {
-      "message": "Hier kannst du dir {amountAndUnit} holen*.",
+      "message": "Hier kannst du dir {amountAndUnit} holen.",
       "amountAndUnit": "{amount} Bitcoin",
-      "footnote": "* über Lightning"
+      "amountAndUnitBtc": "{amount} BTC",
+      "footnoteFiat": "{btc} = {fiat}",
+      "footnote": "über Lightning"
     },
     "introMessagePreview": {
       "headline": "Scanne eine Lightning Tip Card um dir Bitcoin zu holen.",
@@ -36,7 +38,7 @@
     "sectionBitcoin": {
       "paragraphs": {
         "0": "Bitcoin ist eine <strong>digitale Währung</strong>.",
-        "1": "Sie wird von allen Teilnehmer:innen des Bitcoin-Netzwerks verwaltet, das bedeutet, sie ist <strong>nicht unter Kontrolle</strong> einer Zentralbank, Regierung oder eines Konzerns.",
+        "1": "Sie wird von allen Teilnehmerinnen und Teilnehmern des Bitcoin-Netzwerks verwaltet, das bedeutet, sie ist <strong>nicht unter Kontrolle</strong> einer Zentralbank, Regierung oder eines Konzerns.",
         "2": "Überweisungen (auch internationale) sind so einfach wie das Scannen eines QR-Codes. Probier es einfach aus!"
       }
     },
@@ -81,7 +83,7 @@
       "headline": "Mehr über Bitcoin",
       "text": "Es gibt viele Möglichkeiten, mehr über Bitcoin zu erfahren.",
       "0": {
-        "text": "<strong>Bitcoin verstehen</strong> ist <em>der</em> deutschsprachige Podcast für Bitcoin-Einsteiger:innen und neugierige Fortgeschrittene.",
+        "text": "<strong>Bitcoin verstehen</strong> ist <em>der</em> deutschsprachige Podcast für Bitcoin-Einsteiger und neugierige Fortgeschrittene.",
         "linkLabel": "Bitcoin verstehen",
         "linkHref": "https://bitcoinverstehen.info/"
       },
@@ -90,6 +92,9 @@
         "linkLabel": "Hol dir hier dein Ticket für die BTC23",
         "linkHref": "https://pretix.eu/btc/23/c/bPCDAshzq/"
       }
+    },
+    "errors": {
+      "errorInvalidLnurl": "Es scheint, als wäre die LNURL nicht von einer gültigen Tip Card."
     }
   },
   "funding": {
@@ -97,14 +102,16 @@
     "headline": "Lade die Tip Card auf",
     "headlineFunded": "Die Tip Card wurde aufgeladen",
     "headlineUsed": "Die Tip Card wurde eingelöst",
-    "text": "Diese Tip Card wurde noch nicht mit Sats aufgeladen. Lege fest, welchen Betrag du aufladen möchtest und welche Nachricht der Empfänger in seiner Wallet sehen soll.",
+    "headlineSetFunding": "Tip Card Funding",
+    "text": "Diese Tip Card wurde noch nicht mit Sats aufgeladen. Lege fest, welchen Betrag du aufladen möchtest und welche Nachricht die Empfängerin in ihrer Wallet sehen soll.",
     "textFunded": "Die Karte wurde mit {amountAndUnit} aufgeladen und kann weitergegeben werden.",
     "textUsed": "Die Karte wurde mit {amountAndUnit} aufgeladen und eingelöst.",
+    "textSetFunding": "Die Karte wird gemeinsam mit dem ganzen Set aufgeladen. Bezahle die Invoice für das Set um fortzufahren.",
     "amountAndUnit": "{amount} BTC",
     "form": {
-      "textHint": "wird in der Wallet des Empfängers angezeigt werden",
+      "textHint": "Wird in der Wallet des Empfängers angezeigt",
       "notePlaceholder": "Notizen / ausgegeben an",
-      "noteHint": "wird im Statusbereich der Tip Cards Übersichtsseite angezeigt",
+      "noteHint": "Wird im Statusbereich der Tip Cards Übersichtsseite angezeigt",
       "button": "Jetzt aufladen"
     },
     "invoiceText": "Lade {amount} Sats auf deine Tip Card:",
@@ -124,6 +131,28 @@
       "finishDisabledTooltip": "Die Karte muss zuerst aufgeladen werden.",
       "buttonMakeShared": "Tip Card gemeinsam aufladen"
     }
+  },
+  "setFunding": {
+    "title": "Set aufladen",
+    "headline": "Set aufladen",
+    "setName": "Set-Name: {setName}",
+    "amountAndUnit": "{amount} BTC",
+    "text": "In diesem Set gibt es {numberOfCardsToFund} Karten, die auf einmal aufgeladen werden können. Lege den Betrag pro Karte fest und die Nachricht, die die Empfängerinnen und Empfänger in ihren Wallets sehen sollen. Die Summe beträgt {amountAndUnit}.",
+    "textFundingNotPossible": "In diesem Set befinden sich bereits verwendete Karten. Erstelle ein neues Set, um alle Karten auf einmal aufzuladen.",
+    "invoiceText": "Bezahle die Invoice über {amountAndUnit}, um {numberOfCardsToFund} Karten aufzuladen.",
+    "textFunded": "Alle {numberOfCardsToFund} Karten dieses Sets wurden mit je {amountAndUnitPerCard} aufgeladen.",
+    "form": {
+      "amountLabel": "Betrag pro Karte",
+      "smallAmountWarning": "Warnung: Kleine Beträge pro Karte können für die Empfänger zu Problemen beim Abholen ihrer Sats führen. Wir empfehlen ein Minimum von 210 sats pro Karte.",
+      "totalAmountLabel": "Summe",
+      "textHint": "Wird in der Wallet des Empfängers angezeigt",
+      "notePlaceholder": "Notizen / ausgegeben an",
+      "noteHint": "Wird im Statusbereich der Tip Cards Übersichtsseite angezeigt",
+      "button": "Set aufladen"
+    },
+    "resetInvoice": "Set-Invoice zurücksetzen",
+    "resetDisabledTooltip": "Dieses Set wurde bereits aufgeladen",
+    "backToSet": "Zurück zum Set"
   },
   "index": {
     "buttonCreate": "Erstelle dein Tip Cards-Set",
@@ -150,6 +179,7 @@
       "labelFunded": "Aufgeladen",
       "labelPendingFunding": "Wird aufgeladen",
       "labelPendingSharedFunding": "Wird gemeinsam aufgeladen",
+      "labelPendingSetFunding": "Set funding in progress",
       "labelNote": "Notiz",
       "labelViewed": "Wurde angesehen",
       "reload": "Aktualisieren"
@@ -162,21 +192,33 @@
       "cardQrCodeLogoLabel": "Logo auf den QR-Codes",
       "cardQrCodeLogo": {
         "noLogo": "Kein Logo"
-      },
-      "setName": "Set-Name"
+      }
     },
-    "buttonSaveCardsSet": "Set speichern",
-    "buttonDeleteCardsSet": "Set löschen",
-    "buttonPrint": "Tip Cards drucken",
-    "buttonDownloadPngs": "PNGs downloaden",
-    "saveSetConfirm": "Das aktuelle Tip Cards-Set wird lokal in diesem Browser gespeichert (dafür wird localStorage verwendet).\n\nDu kannst auch die URL (siehe Browser-Adressleiste) verwenden um später erneut auf dieses Tip Cards-Set zuzugreifen.\n\nMöchtest du speichern?",
-    "deleteSetConfirm": "Möchtest du die Einstellungen des aktuellen Tip Cards-Sets wirklich aus dem Browser löschen?",
-    "filterLabel": "Karten filtern:",
-    "filter": {
-      "all": "Alle",
-      "unfunded": "Nicht aufgeladen",
-      "funded": "Aufgeladen",
-      "used": "Eingelöst"
+    "actions": {
+      "headline": "Aktionen",
+      "buttonPrint": "Tip Cards drucken",
+      "buttonDownloadPngs": "PNGs downloaden",
+      "setName": "Set-Name",
+      "buttonSaveCardsSet": "Set speichern",
+      "buttonDeleteCardsSet": "Set löschen",
+      "saveSetConfirm": "Das aktuelle Tip Cards-Set wird lokal in diesem Browser gespeichert (dafür wird localStorage verwendet).\n\nDu kannst auch die URL (siehe Browser-Adressleiste) verwenden um später erneut auf dieses Tip Cards-Set zuzugreifen.\n\nMöchtest du speichern?",
+      "deleteSetConfirm": "Möchtest du die Einstellungen des aktuellen Tip Cards-Sets wirklich aus dem Browser löschen?",
+      "setFunding": {
+        "intro": "Du kannst die Tip Cards einzeln aufladen, indem du den QR-Code einer neuen Karte scannst. Wenn du alle Karten eines Sets auf einmal aufladen willst, verwende die Funktion \"Set aufladen\".",
+        "label": "Alle Karten auf einmal aufladen",
+        "button": "Set aufladen",
+        "disabledReason": "In diesem Set befinden sich bereits verwendete Karten. Erstelle ein neues Set, um alle Karten auf einmal aufzuladen."
+      }
+    },
+    "cards": {
+      "headline": "Tip Cards",
+      "filterLabel": "Karten filtern:",
+      "filter": {
+        "all": "Alle",
+        "unfunded": "Nicht aufgeladen",
+        "funded": "Aufgeladen",
+        "used": "Eingelöst"
+      }
     }
   },
   "lightningQrCode": {

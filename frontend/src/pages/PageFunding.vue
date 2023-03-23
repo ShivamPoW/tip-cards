@@ -7,7 +7,21 @@
     >
       <AnimatedLoadingWheel />
     </div>
-    <div 
+    <div
+      v-else-if="setFunding"
+      class="flex-1 mt-8 px-4"
+    >
+      <HeadlineDefault
+        level="h1"
+        class="mt-10"
+      >
+        {{ t('funding.headlineSetFunding') }}
+      </HeadlineDefault>
+      <p>
+        {{ t('funding.textSetFunding') }}
+      </p>
+    </div>
+    <div
       v-else
       class="flex-1 mt-8 px-4"
     >
@@ -19,7 +33,7 @@
           usedDate != null
             ? t('funding.headlineUsed')
             : funded
-              ? t('funding.headlineFunded') 
+              ? t('funding.headlineFunded')
               : t('funding.headline')
         }}
       </HeadlineDefault>
@@ -271,7 +285,7 @@
       </div>
     </div>
     <LinkDefault
-      v-if="!initializing && invoice == null && !shared && !funded"
+      v-if="!initializing && invoice == null && !shared && !funded && !setFunding"
       class="mt-12 px-4"
       :disabled="creatingInvoice"
       @click.prevent="makeShared"
@@ -301,7 +315,7 @@ import SatsAmountSelector from '@/components/SatsAmountSelector.vue'
 import CardStatus from '@/components/CardStatus.vue'
 import formatNumber from '@/modules/formatNumber'
 import { loadCardStatus } from '@/modules/loadCardStatus'
-import { rateBtcEur } from '@/modules/rateBtcEur'
+import { rateBtcEur } from '@/modules/rateBtcFiat'
 import { BACKEND_API_ORIGIN } from '@/constants'
 import { encodeLnurl } from '@root/modules/lnurlHelpers'
 
@@ -329,6 +343,7 @@ const cardStatus = ref<string | undefined>()
 const cardFundedDate = ref<number | undefined>()
 const usedDate = ref<number | undefined>()
 const viewed = ref(false)
+const setFunding = ref(false)
 
 const lnurl = computed(() => encodeLnurl(`${BACKEND_API_ORIGIN}/api/lnurl/${route.params.cardHash}`))
 
@@ -370,6 +385,10 @@ const loadLnurlData = async () => {
   }
   if (card?.landingPageViewed != null) {
     viewed.value = true
+  }
+  if (card?.setFunding != null) {
+    setFunding.value = true
+    amount.value = typeof card.setFunding.amount === 'number' ? card.setFunding.amount : 0
   }
   initializing.value = false
 
@@ -513,6 +532,7 @@ const finishShared = async () => {
 const previewPageUrl = computed(() => {
   return router.resolve({
     name: 'preview',
+    params: { lang: route.params.lang },
     query: { lightning: lnurl.value.toUpperCase() },
   }).href
 })

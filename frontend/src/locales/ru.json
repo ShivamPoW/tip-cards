@@ -10,8 +10,8 @@
     "introGreeting":"Привет!",
     "introMessageReceiveBtc":{
       "message":"Вы вот-вот получите {amountAndUnit}",
-      "amountAndUnit":"{amount} биткоин*",
-      "footnote":"* через сеть Молния"
+      "amountAndUnit":"{amount} биткоин",
+      "footnote":"через сеть Молния"
     },
     "introMessageAlreadyUsed":{
       "headline":"Похоже, этот QR-код уже был использован.",
@@ -76,7 +76,9 @@
   },
   "funding":{
     "headline":"Пополнить эту ТИП-карту",
+    "headlineSetFunding": "Tip Card Funding",
     "text":"Эта ТИП-карта еще не пополнена сатами. Укажите сумму и сообщение, которое вы бы хотели, чтобы получатель увидел в своем кошельке.",
+    "textSetFunding": "This card will be funded as soon as the invoice of the set is paid. Please come back later.",
     "form":{
       "textHint":"отобразится в кошельке получателя",
       "notePlaceholder":"Примечания / вручено",
@@ -103,6 +105,25 @@
       "buttonMakeShared":"Активировать совместное пополнение для этой ТИП-карты"
     }
   },
+  "setFunding": {
+    "title": "Set funding",
+    "headline": "Set funding",
+    "setName": "Set name: {setName}",
+    "amountAndUnit": "{amount} BTC",
+    "text": "This set has {numberOfCardsToFund} cards with no sats on them. Specify the amount per card and the message you want the recipient to see in their wallet. The total invoice will be {amountAndUnit}.",
+    "invoiceText": "Fund {numberOfCardsToFund} cards by paying a single invoice of {amountAndUnit}.",
+    "form": {
+      "amountLabel": "Amount per card",
+      "smallAmountWarning": "Warning: Small amounts per card may cause issues for the recipient when trying to receive their sats. We recommend to use a minimum of 210 sats per card.",
+      "totalAmountLabel": "Total amount",
+      "textHint": "Will be displayed in the recipient's wallet",
+      "notePlaceholder": "Notes / handed out to",
+      "noteHint": "Will be displayed on the status section of your Tip Cards set",
+      "button": "Fund set"
+    },
+    "resetInvoice": "Reset Set Invoice",
+    "backToSet": "Back to the cards"
+  },
   "index":{
     "buttonCreate":"Создайте собственный набор ТИП-карт ⚡",
     "savedCardsSetsHeadline":"Сохраненные наборы ТИП-карт",
@@ -127,6 +148,7 @@
       "labelFunded":"Пополненные",
       "labelPendingFunding":"Поплнение в процессе",
       "labelPendingSharedFunding":"Совместное поплнение в процессе",
+      "labelPendingSetFunding": "Set funding in progress",
       "labelNote":"Примечание",
       "reload":"Перезагрузить"
     },
@@ -140,21 +162,32 @@
       "cardQrCodeLogoLabel":"Лого на QR-коде",
       "cardQrCodeLogo":{
         "noLogo":"Без лого"
-      },
-      "setName":"Указать название"
+      }
     },
-    "buttonSaveCardsSet":"Сохранить набор ТИП-карт",
-    "buttonDeleteCardsSet":"Удалить сохраненный набор",
-    "buttonPrint":"Распечатать ТИП-карты",
-    "buttonDownloadPngs":"Скачать PNG",
-    "saveSetConfirm":"Текущий набор ТИП-карт будет сохранен локально в этом браузере, используя localStorage.\n\nYВы также можете использовать URL-адрес (из адресной строки) для доступа к этому набору ТИП-карт.\n\nПродолжить?",
-    "deleteSetConfirm":"Вы действительно хотите удалить текущий набор ТИП-карт и его настройки из этого браузера?",
-    "filterLabel":"Показать карты:",
-    "filter":{
-      "all":"Все",
-      "unfunded":"Непополненные",
-      "funded":"Пополненные",
-      "used":"Использованные"
+    "actions": {
+      "headline": "Actions",
+      "buttonPrint":"Распечатать ТИП-карты",
+      "buttonDownloadPngs":"Скачать PNG",
+      "setName":"Указать название",
+      "buttonSaveCardsSet":"Сохранить набор ТИП-карт",
+      "buttonDeleteCardsSet":"Удалить сохраненный набор",
+      "saveSetConfirm":"Текущий набор ТИП-карт будет сохранен локально в этом браузере, используя localStorage.\n\nYВы также можете использовать URL-адрес (из адресной строки) для доступа к этому набору ТИП-карт.\n\nПродолжить?",
+      "deleteSetConfirm":"Вы действительно хотите удалить текущий набор ТИП-карт и его настройки из этого браузера?",
+      "setFunding": {
+        "labelAll": "Fund all cards at once",
+        "labelUnfunded": "Fund all unfunded cards",
+        "button": "Load set"
+      }
+    },
+    "cards": {
+      "headline": "Tip Cards",
+      "filterLabel":"Показать карты:",
+      "filter":{
+        "all":"Все",
+        "unfunded":"Непополненные",
+        "funded":"Пополненные",
+        "used":"Использованные"
+      }
     }
   },
   "lightningQrCode":{

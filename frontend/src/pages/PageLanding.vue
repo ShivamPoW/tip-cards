@@ -10,6 +10,14 @@
       <HeadlineDefault level="h1" class="mb-8">
         <span class="text-5xl">{{ t('landing.introGreeting') }}</span>
       </HeadlineDefault>
+      <div v-if="userErrorMessage != null" class="my-4">
+        <ParagraphDefault
+          class="text-red-500"
+          dir="ltr"
+        >
+          {{ userErrorMessage }}
+        </ParagraphDefault>
+      </div>
       <div v-if="showContent === 'spendable'">
         <HeadlineDefault level="h2" styling="h1">
           <I18nT keypath="landing.introMessageReceiveBtc.message">
@@ -17,19 +25,44 @@
               <span class="inline-block">
                 <I18nT keypath="landing.introMessageReceiveBtc.amountAndUnit">
                   <template #amount>
-                    <span
-                      :title="amountInEur?.toLocaleString(undefined, { style: 'currency', currency: 'EUR', maximumFractionDigits: 4 })"
-                    >
-                      {{ formatNumber(Number(amount) / (100 * 1000 * 1000), 8, 8) }}
-                    </span>
+                    <FormatBitcoin
+                      v-if="amount != null"
+                      :value="amount / (100 * 1000 * 1000)"
+                      :format="{ minimumFractionDigits: 8, maximumFractionDigits: 8 }"
+                      leading-zeros-class="text-grey-medium"
+                    />
                   </template>
-                </I18nT>
+                </I18nT>*
               </span>
             </template>
           </I18nT>
         </HeadlineDefault>
-        <ParagraphDefault class="text-sm mt-3">
-          {{ t('landing.introMessageReceiveBtc.footnote') }}
+        <ParagraphDefault
+          v-if="amountInFiat != null && amountInFiat >= 0.01"
+          class="text-sm mt-3"
+        >
+          *
+          <I18nT keypath="landing.introMessageReceiveBtc.footnoteFiat">
+            <template #btc>
+              {{
+                t('landing.introMessageReceiveBtc.amountAndUnitBtc', {
+                  amount: formatNumber(Number(amount) / (100 * 1000 * 1000), 8, 8),
+                })
+              }}
+            </template>
+            <template #fiat>
+              {{
+                $n(amountInFiat, {
+                  style: 'currency',
+                  currency: currentFiat,
+                  currencyDisplay: 'code',
+                })
+              }}
+            </template>
+          </I18nT>
+        </ParagraphDefault>
+        <ParagraphDefault v-if="amountInFiat != null && amountInFiat < 0.01" class="text-sm mt-3">
+          * {{ t('landing.introMessageReceiveBtc.footnote') }}
         </ParagraphDefault>
       </div>
       <div v-if="showContent === 'preview'">
@@ -86,17 +119,6 @@
           </I18nT>
         </ParagraphDefault>
       </div>
-      <div v-if="userErrorMessage != null">
-        <ParagraphDefault
-          class="text-red-500"
-          dir="ltr"
-        >
-          {{ userErrorMessage }}
-        </ParagraphDefault>
-        <ParagraphDefault v-if="!spent && amount == null">
-          {{ t('landing.introMessageAlreadyUsed.message') }}
-        </ParagraphDefault>
-      </div>
       <div class="my-10">
         <IconBitcoin class="w-16 mb-3 ltr:float-right ltr:ml-3 rtl:float-left rtl:mr-3" />
         <!-- eslint-disable vue/no-v-html, vue/no-v-text-v-html-on-component -->
@@ -136,14 +158,14 @@
         <ParagraphDefault>
           <I18nT keypath="landing.sectionWallet.other">
             <template #wallet0>
-              <LinkDefault href="https://bluewallet.io/">BlueWallet</LinkDefault>
+              <LinkDefault href="https://breez.technology/">Breez</LinkDefault>
             </template>
             <template #wallet1>
               <LinkDefault href="https://phoenix.acinq.co/">Phoenix</LinkDefault>
             </template>
-            <template #wallet2>
-              <LinkDefault href="https://breez.technology/">Breez</LinkDefault>
-            </template>
+            <!-- <template #wallet2>
+              <LinkDefault href="https://muun.com/">Muun</LinkDefault>
+            </template> -->
           </I18nT>
           <br>
           <small>{{ t('landing.sectionWallet.otherFootnote') }}</small>
@@ -167,6 +189,7 @@
           {{ t('landing.sectionReceive.statusReceived.message') }} 🎉
         </ParagraphDefault>
         <LightningQrCode
+          v-if="lnurl != null"
           :value="lnurl"
           :success="spent"
           :pending="withdrawPending"
@@ -257,7 +280,7 @@
         </ParagraphDefault>
         <ParagraphDefault class="text-center">
           <ButtonDefault
-            @click="$router.push({ name: 'home' })"
+            @click="$router.push({ name: 'home', params: { lang: $route.params.lang } })"
           >
             {{ t('landing.sectionUse.createYourOwnTipCardsButton') }}
           </ButtonDefault>
@@ -268,11 +291,12 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
 import I18nT from '@/modules/I18nT'
+import { useI18nHelpers } from '@/modules/initI18n'
 import BackLink from '@/components/BackLink.vue'
 import IconBitcoin from '@/components/svgs/IconBitcoin.vue'
 import HeadlineDefault from '@/components/typography/HeadlineDefault.vue'
@@ -283,11 +307,14 @@ import LightningQrCode from '@/components/LightningQrCode.vue'
 import { decodeLnurl } from '@/modules//lnurlHelpers'
 import formatNumber from '@/modules/formatNumber'
 import { loadCardStatus } from '@/modules/loadCardStatus'
-import { rateBtcEur } from '@/modules/rateBtcEur'
+import { rateBtcFiat } from '@/modules/rateBtcFiat'
 import sanitizeI18n from '@/modules/sanitizeI18n'
 import router from '@/router'
+import FormatBitcoin from '@/components/FormatBitcoin.vue'
 
 const { t, te } = useI18n()
+
+const { currentFiat } = useI18nHelpers()
 
 const spent = ref<boolean | undefined>()
 const amount = ref<number | undefined | null>()
@@ -295,20 +322,24 @@ const userErrorMessage = ref<string | undefined>()
 const withdrawPending = ref(false)
 const cardUsed = ref<number | undefined>()
 
-const amountInEur = computed(() => {
-  if (amount.value == null || rateBtcEur.value == null) {
+const amountInFiat = computed(() => {
+  if (amount.value == null || rateBtcFiat.value == null) {
     return undefined
   }
-  return (amount.value / (100 * 1000 * 1000)) * rateBtcEur.value
+  return (amount.value / (100 * 1000 * 1000)) * rateBtcFiat.value[currentFiat.value]
 })
 
 const route = useRoute()
-const lnurl = String(route.query.lightning)
+
+const lnurl = computed(() => typeof route.query.lightning === 'string' ? route.query.lightning : undefined)
 
 const cardHash = computed<string | null | undefined>(() => {
   let decodedLnurl: string
+  if (typeof lnurl.value !== 'string') {
+    return null
+  }
   try {
-    decodedLnurl = decodeLnurl(lnurl)
+    decodedLnurl = decodeLnurl(lnurl.value)
   } catch (error) {
     return null
   }
@@ -318,8 +349,8 @@ const cardHash = computed<string | null | undefined>(() => {
 
 const loadLnurlData = async () => {
   if (cardHash.value == null) {
-    if (route.name !== 'preview') {
-      router.push({ name: 'home' })
+    if (lnurl.value != null && lnurl.value !== '') {
+      userErrorMessage.value = t('landing.errors.errorInvalidLnurl')
     }
     return
   }
@@ -335,6 +366,7 @@ const loadLnurlData = async () => {
     router.replace({
       name: 'funding',
       params: {
+        lang: route.params.lang,
         cardHash: cardHash.value,
       },
     })
@@ -381,4 +413,6 @@ const showContent = computed<'preview' | 'spendable' | 'used' | 'recentlyUsed' |
 })
 
 onMounted(loadLnurlData)
+
+watch(() => route.params.lang, loadLnurlData)
 </script>

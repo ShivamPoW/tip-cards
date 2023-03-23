@@ -11,9 +11,9 @@
     "titlePreview": "Vista previa – Consigue tu Bitcoin",
     "introGreeting": "¡Hola!",
     "introMessageReceiveBtc": {
-      "message": "Puedes obtener {amountAndUnit} aquí*.",
+      "message": "Puedes obtener {amountAndUnit} aquí.",
       "amountAndUnit": "{amount} Bitcoin",
-      "footnote": "* con Lightning"
+      "footnote": "con Lightning"
     },
     "introMessageAlreadyUsed": {
       "headline": "Al parecer, este código QR ya ha sido canjeado.",
@@ -73,9 +73,11 @@
     "headline": "Cargar la tarjeta de propinas",
     "headlineFunded": "Tip Card has been funded",
     "headlineUsed": "Tip Card successfully redeemed",
+    "headlineSetFunding": "Tip Card Funding",
     "text": "Esta tarjeta de propina aún no ha sido recargada con sats. Estableze la cantidad que deseas recargar y el mensaje que quieres que el destinatario vea en su cartera.",
     "textFunded": "La tarjeta está cargada con {amountAndUnit} y está lista para regalar.",
     "textUsed": "This card was funded with {amountAndUnit} and has been redeemed.",
+    "textSetFunding": "This card will be funded as soon as the invoice of the set is paid. Please come back later.",
     "amountAndUnit": "{amount} BTC",
     "form": {
       "textHint": "aparecerá en la cartera del destinatario",
@@ -100,6 +102,25 @@
       "buttonMakeShared": "Carga de la tarjeta de propina juntos"
     }
   },
+  "setFunding": {
+    "title": "Set funding",
+    "headline": "Set funding",
+    "setName": "Set name: {setName}",
+    "amountAndUnit": "{amount} BTC",
+    "text": "This set has {numberOfCardsToFund} cards with no sats on them. Specify the amount per card and the message you want the recipient to see in their wallet. The total invoice will be {amountAndUnit}.",
+    "invoiceText": "Fund {numberOfCardsToFund} cards by paying a single invoice of {amountAndUnit}.",
+    "form": {
+      "amountLabel": "Amount per card",
+      "smallAmountWarning": "Warning: Small amounts per card may cause issues for the recipient when trying to receive their sats. We recommend to use a minimum of 210 sats per card.",
+      "totalAmountLabel": "Total amount",
+      "textHint": "Will be displayed in the recipient's wallet",
+      "notePlaceholder": "Notes / handed out to",
+      "noteHint": "Will be displayed on the status section of your Tip Cards set",
+      "button": "Fund set"
+    },
+    "resetInvoice": "Reset Set Invoice",
+    "backToSet": "Back to the cards"
+  },
   "index": {
     "buttonCreate": "Crea tu conjunto de tarjetas de propina",
     "savedCardsSetsHeadline": "Juegos de tarjetas de consejos guardados",
@@ -118,10 +139,19 @@
   "cards": {
     "title": "Conjunto de tarjetas de propina",
     "status": {
+      "headline": "Status",
+      "noCards": "No cards have been funded yet. You will find the status of all cards from this set here after funding your first Tip Card.",
       "labelUsed": "Canjeada | Canjeadas",
-      "labelFunded": "Cargada | Cargadas"
+      "labelFunded": "Cargada | Cargadas",
+      "labelPendingFunding": "Funding in progress",
+      "labelPendingSharedFunding": "Shared funding in progress",
+      "labelPendingSetFunding": "Set funding in progress",
+      "labelNote": "Note",
+      "labelViewed": "Viewed by recipient",
+      "reload": "Reload"
     },
     "settings": {
+      "headline": "Configuration",
       "numberOfCards": "Número",
       "cardHeadline": "Título de la tarjeta",
       "cardText": "Texto de la tarjeta",
@@ -130,18 +160,30 @@
         "noLogo": "Sin logo"
       }
     },
-    "buttonSaveCardsSet": "Guardar juego de tarjetas de propina",
-    "buttonDeleteCardsSet": "Borrar juego",
-    "buttonPrint": "Imprimir tarjetas de propina",
-    "buttonDownloadPngs": "Bajar PNGs",
-    "saveSetConfirm": "El conjunto actual de tarjetas de consejos se almacena localmente en este navegador (se utiliza localStorage para ello). También puedes utilizar la URL (véase la barra de direcciones del navegador) para acceder de nuevo a este conjunto de tarjetas de consejos más adelante. ¿Deseas guardar?",
-    "deleteSetConfirm": "¿Realmente quieres eliminar la configuración del conjunto de tarjetas de consejos actual del navegador?",
-    "filterLabel": "Filtro de tarjetas:",
-    "filter": {
-      "all": "Todas",
-      "unfunded": "Sin cargo",
-      "funded": "Cargadas",
-      "used": "Canjeadas"
+    "actions": {
+      "headline": "Actions",
+      "buttonPrint": "Imprimir tarjetas de propina",
+      "buttonDownloadPngs": "Bajar PNGs",
+      "setName": "Set name",
+      "buttonSaveCardsSet": "Guardar juego de tarjetas de propina",
+      "buttonDeleteCardsSet": "Borrar juego",
+      "saveSetConfirm": "El conjunto actual de tarjetas de consejos se almacena localmente en este navegador (se utiliza localStorage para ello). También puedes utilizar la URL (véase la barra de direcciones del navegador) para acceder de nuevo a este conjunto de tarjetas de consejos más adelante. ¿Deseas guardar?",
+      "deleteSetConfirm": "¿Realmente quieres eliminar la configuración del conjunto de tarjetas de consejos actual del navegador?",
+      "setFunding": {
+        "labelAll": "Fund all cards at once",
+        "labelUnfunded": "Fund all unfunded cards",
+        "button": "Load set"
+      }
+    },
+    "cards": {
+      "headline": "Tip Cards",
+      "filterLabel": "Filtro de tarjetas:",
+      "filter": {
+        "all": "Todas",
+        "unfunded": "Sin cargo",
+        "funded": "Cargadas",
+        "used": "Canjeadas"
+      }
     }
   },
   "lightningQrCode": {

@@ -1,5 +1,6 @@
 const plugin = require('tailwindcss/plugin')
 const colors = require('tailwindcss/colors')
+const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
   content: [
@@ -10,6 +11,7 @@ module.exports = {
     extend: {
       colors: {
         'grey': colors.gray[500],
+        'grey-medium': colors.gray[400],
         'grey-light': colors.gray[200],
         'grey-dark': colors.gray[600],
         'black': '#000',
@@ -54,6 +56,10 @@ module.exports = {
           },
         },
       },
+    },
+    screens: {
+      'xs': '475px',
+      ...defaultTheme.screens,
     },
   },
   plugins: [

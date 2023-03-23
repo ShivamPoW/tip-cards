@@ -18,6 +18,10 @@ export enum ErrorCode {
   UnableToGetLnbitsLnurlpStatus = 'UnableToGetLnbitsLnurlpStatus',
   UnableToGetLnbitsPaymentRequests = 'UnableToGetLnbitsPaymentRequests',
   UnableToRemoveLnurlpLink = 'UnableToRemoveLnurlpLink',
+  SetNotFound = 'SetNotFound',
+  UnknownErrorWhileCheckingSetInvoiceStatus = 'UnknownErrorWhileCheckingSetInvoiceStatus',
+  CannotDeleteFundedSet = 'CannotDeleteFundedSet',
+  CardNeedsSetFunding = 'CardNeedsSetFunding',
 }
 
 export class ErrorWithCode {

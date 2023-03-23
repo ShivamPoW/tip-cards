@@ -12,8 +12,8 @@
       "introGreeting": "नमस्ते",
       "introMessageReceiveBtc": {
         "message": "आपको प्राप्त होने वाले है {amountAndUnit}",
-        "amountAndUnit": "{amount} बिटकॉइन*",
-        "footnote": "* लाइटनिंग मार्ग से"
+        "amountAndUnit": "{amount} बिटकॉइन",
+        "footnote": "लाइटनिंग मार्ग से"
       },
       "introMessageAlreadyUsed": {
         "headline": "ऐसा लगता है कि इस QR-कोड का पहले ही इस्तेमाल किया जा चुका है।",
@@ -73,9 +73,11 @@
       "headline": "इस टिप कार्ड में राशि जमा करें",
       "headlineFunded": "टिप कार्ड को निधि किया गया है",
       "headlineUsed": "टिप कार्ड का सफलतापूर्वक उपयोग किया गया",
+      "headlineSetFunding": "Tip Card Funding",
       "text": "इस टिप कार्ड में अभी तक सैट्स नहीं जमा किये गए है। उस राशि और संदेश का वर्णन करें जिसे आप प्राप्तकर्ता को उनके वॉलेट में दिखना चाहते हैं।",
       "textFunded": "इस टिप कार्ड में पहले से ही ({amountAndUnit}) पैसा है और इसे किसी ऐसे व्यक्ति को दिया जा सकता है जिसे ऑरेंज पिलिंग की आवश्यकता हो।",
       "textUsed": "इस कार्ड में {amountAndUnit} की राशि डाली गई थी और इसका उपयोग हो चूका है।",
+      "textSetFunding": "This card will be funded as soon as the invoice of the set is paid. Please come back later.",
       "amountAndUnit": "{amount} BTC",
       "form": {
         "textHint": "प्राप्तकर्ता के वॉलेट में प्रदर्शित किया जाएगा", 
@@ -100,6 +102,25 @@
         "finishDisabledTooltip": "आपको पहले इस कार्ड को निधि करना होगा।",
         "buttonMakeShared": "इस टिप कार्ड पर सहभाजित निधिकरण को सक्रिय करें"
       }
+    },
+    "setFunding": {
+      "title": "Set funding",
+      "headline": "Set funding",
+      "setName": "Set name: {setName}",
+      "amountAndUnit": "{amount} BTC",
+      "text": "This set has {numberOfCardsToFund} cards with no sats on them. Specify the amount per card and the message you want the recipient to see in their wallet. The total invoice will be {amountAndUnit}.",
+      "invoiceText": "Fund {numberOfCardsToFund} cards by paying a single invoice of {amountAndUnit}.",
+      "form": {
+        "amountLabel": "Amount per card",
+        "smallAmountWarning": "Warning: Small amounts per card may cause issues for the recipient when trying to receive their sats. We recommend to use a minimum of 210 sats per card.",
+        "totalAmountLabel": "Total amount",
+        "textHint": "Will be displayed in the recipient's wallet",
+        "notePlaceholder": "Notes / handed out to",
+        "noteHint": "Will be displayed on the status section of your Tip Cards set",
+        "button": "Fund set"
+      },
+      "resetInvoice": "Reset Set Invoice",
+      "backToSet": "Back to the cards"
     },
     "index": {
       "buttonCreate": "अपना टिप कार्ड समूह बनाएं ⚡",
@@ -126,6 +147,7 @@
         "labelFunded": "निधिबद्ध",
         "labelPendingFunding": "निधिकरण चल रहा है",
         "labelPendingSharedFunding": "सहभाजित निधिकरण चल रही है",
+        "labelPendingSetFunding": "Set funding in progress",
         "labelNote": "टिप्पणी",
         "labelViewed": "प्राप्तकर्ता ने देखा",
         "reload": "पुनः ताज़ा करें" 
@@ -138,21 +160,32 @@
         "cardQrCodeLogoLabel": "QR-कोड्स पर प्रतीक चिन्ह",
         "cardQrCodeLogo": {
           "noLogo": "कोई प्रतीक चिन्ह नहीं"
-        },
-        "setName": "समूह नाम  भरें"
+        }
       },
-      "buttonSaveCardsSet": "टिप कार्ड का समूह सहेजें",
-      "buttonDeleteCardsSet": "सहेजा गया समूह हटाएं",
-      "buttonPrint": "टिप कार्ड की छपाई करें",
-      "buttonDownloadPngs": "PNGs डाउनलोड करें",
-      "saveSetConfirm": "वर्तमान टिप कार्ड सेट को स्थानीय संग्रहण का उपयोग करके इस ब्राउज़र में स्थानीय रूप से सहेजा जाएगा।\n\nआप इस टिप कार्ड सेट को एक्सेस करने के लिए URL (एड्रेस बार से) का भी उपयोग कर सकते हैं।\n\nजारी रखें?",
-      "deleteSetConfirm": "क्या आप वास्तव में इस ब्राउज़र से वर्तमान टिप कार्ड सेट और इसकी सेटिंग हटाना चाहते हैं?",
-      "filterLabel": "कार्ड दिखाएं:",
-      "filter": {
-        "all": "सभी",
-        "unfunded": "अनिधिक",
-        "funded": "निधिबद्ध",
-        "used": "प्रयुक्त" 
+      "actions": {
+        "headline": "Actions",
+        "buttonPrint": "टिप कार्ड की छपाई करें",
+        "buttonDownloadPngs": "PNGs डाउनलोड करें",
+        "setName": "समूह नाम  भरें",
+        "buttonSaveCardsSet": "टिप कार्ड का समूह सहेजें",
+        "buttonDeleteCardsSet": "सहेजा गया समूह हटाएं",
+        "saveSetConfirm": "वर्तमान टिप कार्ड सेट को स्थानीय संग्रहण का उपयोग करके इस ब्राउज़र में स्थानीय रूप से सहेजा जाएगा।\n\nआप इस टिप कार्ड सेट को एक्सेस करने के लिए URL (एड्रेस बार से) का भी उपयोग कर सकते हैं।\n\nजारी रखें?",
+        "deleteSetConfirm": "क्या आप वास्तव में इस ब्राउज़र से वर्तमान टिप कार्ड सेट और इसकी सेटिंग हटाना चाहते हैं?",
+        "setFunding": {
+          "labelAll": "Fund all cards at once",
+          "labelUnfunded": "Fund all unfunded cards",
+          "button": "Load set"
+        }
+      },
+      "cards": {
+        "headline": "Tip Cards",
+        "filterLabel": "कार्ड दिखाएं:",
+        "filter": {
+          "all": "सभी",
+          "unfunded": "अनिधिक",
+          "funded": "निधिबद्ध",
+          "used": "प्रयुक्त" 
+        }
       }
     },
     "lightningQrCode": {

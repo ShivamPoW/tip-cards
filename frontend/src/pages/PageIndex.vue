@@ -9,7 +9,7 @@
       </HeadlineDefault>
       <p>by <a href="https://satoshiengineering.com" target="_blank">Satoshi Engineering</a></p>
       <p class="mt-4">
-        <ButtonDefault @click="$router.push({ name: 'cards' })">
+        <ButtonDefault @click="$router.push({ name: 'cards', params: { lang: $route.params.lang } })">
           {{ t('index.buttonCreate') }}
         </ButtonDefault>
       </p>
@@ -41,6 +41,7 @@
                   params: {
                     setId: cardsSet.setId,
                     settings: encodeCardsSetSettings(cardsSet.settings),
+                    lang: $route.params.lang,
                   }
                 }"
               >
@@ -161,7 +162,7 @@ onMounted(() => {
     savedCardsSets.value.length === 0
     && typeof originMapping[location.origin] === 'string'
   ) {
-    location.href = originMapping[location.origin]
+    location.href = `${originMapping[location.origin]}${location.pathname}${location.search}${location.hash}`
   }
 })
 </script>

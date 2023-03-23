@@ -18,8 +18,10 @@
     "introGreeting": "היי!",
     "introMessageReceiveBtc": {
       "message": "את/ה עומד/ת לקבל {amountAndUnit}",
-      "amountAndUnit": "{amount} ביטקוין*",
-      "footnote": "* דרך לייטנינג"
+      "amountAndUnit": "{amount} ביטקוין",
+      "amountAndUnitBtc": "{amount} BTC",
+      "footnoteFiat": "{btc} = {fiat}",
+      "footnote": "דרך לייטנינג"
     },
     "introMessagePreview": {
       "headline": "יש לסרוק את אחד מכרטיסי הטיפ לקבלת ביטקוין.",
@@ -83,9 +85,11 @@
     "headline": "טעינת כרטיס הטיפ",
     "headlineFunded": "כרטיס הטיפ טעון",
     "headlineUsed": "כרטיס הטיפ נפדה בהצלחה",
+    "headlineSetFunding": "Tip Card Funding",
     "text": "כרטיס טיפ זה לא נטען עדיין באף סטושי. יש לציין את כמות הסטושים ואת ההודעה שמקבל/ת הכרטיס יראה/תראה בארנק שלו/ה.",
     "textFunded": "כרטיס זה נטען ב-({amountAndUnit}) ואפשר לתת אותו למישהו שצריך את \"הגלולה הכתומה\".",
     "textUsed": "כרטיס זה נטען בעבר ב-{amountAndUnit} וכבר נפדה.",
+    "textSetFunding": "This card will be funded as soon as the invoice of the set is paid. Please come back later.",
     "amountAndUnit": "{amount} ביטקוין",
     "form": {
       "textHint": "יוצג בארנק של מקבל/ת הכרטיס",
@@ -110,6 +114,25 @@
       "buttonFinish": "סיים טעינה",
       "buttonMakeShared": "הפעל טעינה משותפת בכרטיס טיפ זה"
     }
+  },
+  "setFunding": {
+    "title": "Set funding",
+    "headline": "Set funding",
+    "setName": "Set name: {setName}",
+    "amountAndUnit": "{amount} BTC",
+    "text": "This set has {numberOfCardsToFund} cards with no sats on them. Specify the amount per card and the message you want the recipient to see in their wallet. The total invoice will be {amountAndUnit}.",
+    "invoiceText": "Fund {numberOfCardsToFund} cards by paying a single invoice of {amountAndUnit}.",
+    "form": {
+      "amountLabel": "Amount per card",
+      "smallAmountWarning": "Warning: Small amounts per card may cause issues for the recipient when trying to receive their sats. We recommend to use a minimum of 210 sats per card.",
+      "totalAmountLabel": "Total amount",
+      "textHint": "Will be displayed in the recipient's wallet",
+      "notePlaceholder": "Notes / handed out to",
+      "noteHint": "Will be displayed on the status section of your Tip Cards set",
+      "button": "Fund set"
+    },
+    "resetInvoice": "Reset Set Invoice",
+    "backToSet": "Back to the cards"
   },
   "index": {
     "buttonCreate": "ליצירת כרטיסי טיפ ⚡",
@@ -136,6 +159,7 @@
       "labelFunded": "נטענו",
       "labelPendingFunding": "טעינה מתבצעת כרגע",
       "labelPendingSharedFunding": "טעינה משותפת מתבצעת כרגע",
+      "labelPendingSetFunding": "Set funding in progress",
       "labelNote": "הערה",
       "labelViewed": "נפתח ע\"י מקבל/ת הכרטיס",
       "reload": "עדכן"
@@ -148,21 +172,32 @@
       "cardQrCodeLogoLabel": "לוגו שיופיע על פני קוד ה-QR",
       "cardQrCodeLogo": {
         "noLogo": "ללא לוגו"
-      },
-      "setName": "שם קבוצת כרטיסים"
+      }
     },
-    "buttonSaveCardsSet": "שמור קבוצת כרטיסים",
-    "buttonDeleteCardsSet": "מחק קבוצת כרטיסים",
-    "buttonPrint": "הדפס קבוצת כרטיסים",
-    "buttonDownloadPngs": "הורדת PNGים",
-    "saveSetConfirm": "קבוצת הכרטיסים הנוכחית תשמר בזכרון המקומי של הדפדפן.\n\nניתן להשתמש גם בשורת הכתובת של עמוד זה כדי לגשת לקבוצת כרטיסי הטיפ הנוכחית.\n\nלהמשיך?",
-    "deleteSetConfirm": "האם את/ה בטוח/ה שברצונך למחוק את קבוצת הכרטיסים הנוכחית מהזכרון של הדפדפן?",
-    "filterLabel": "תצוגת כרטיסים:",
-    "filter": {
-      "all": "כל הכרטיסים",
-      "unfunded": "טרם נטענו",
-      "funded": "נטענו",
-      "used": "נוצלו"
+    "actions": {
+      "headline": "Actions",
+      "buttonPrint": "הדפס קבוצת כרטיסים",
+      "buttonDownloadPngs": "הורדת PNGים",
+      "setName": "שם קבוצת כרטיסים",
+      "buttonSaveCardsSet": "שמור קבוצת כרטיסים",
+      "buttonDeleteCardsSet": "מחק קבוצת כרטיסים",
+      "saveSetConfirm": "קבוצת הכרטיסים הנוכחית תשמר בזכרון המקומי של הדפדפן.\n\nניתן להשתמש גם בשורת הכתובת של עמוד זה כדי לגשת לקבוצת כרטיסי הטיפ הנוכחית.\n\nלהמשיך?",
+      "deleteSetConfirm": "האם את/ה בטוח/ה שברצונך למחוק את קבוצת הכרטיסים הנוכחית מהזכרון של הדפדפן?",
+      "setFunding": {
+        "labelAll": "Fund all cards at once",
+        "labelUnfunded": "Fund all unfunded cards",
+        "button": "Load set"
+      }
+    },
+    "cards": {
+      "headline": "Tip Cards",
+      "filterLabel": "תצוגת כרטיסים:",
+      "filter": {
+        "all": "כל הכרטיסים",
+        "unfunded": "טרם נטענו",
+        "funded": "נטענו",
+        "used": "נוצלו"
+      }
     }
   },
   "lightningQrCode": {

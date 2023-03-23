@@ -18,8 +18,10 @@
     "introGreeting": "Hey!",
     "introMessageReceiveBtc": {
       "message": "You are just about to receive {amountAndUnit}",
-      "amountAndUnit": "{amount} bitcoin*",
-      "footnote": "* via Lightning"
+      "amountAndUnit": "{amount} bitcoin",
+      "amountAndUnitBtc": "{amount} BTC",
+      "footnoteFiat": "{btc} = {fiat}",
+      "footnote": "via Lightning"
     },
     "introMessagePreview": {
       "headline": "Scan a Lightning Tip Card to receive some bitcoin.",
@@ -76,6 +78,9 @@
       "createYourOwnTipCardsHeadline": "Create your own Tip Cards",
       "createYourOwnTipCardsText": "Would you like to give your friends or colleagues a few Sats (1 Sat = 0.00000001 Bitcoin) or tip someone in Bitcoin? Click on the following button and configure your personal Tip Cards.",
       "createYourOwnTipCardsButton": "Create my own Tip Cards"
+    },
+    "errors": {
+      "errorInvalidLnurl": "It seems the LNURL is not from a valid Tip Card."
     }
   },
   "funding": {
@@ -83,15 +88,17 @@
     "headline": "Fund this Tip Card",
     "headlineFunded": "Tip Card has been funded",
     "headlineUsed": "Tip Card successfully redeemed",
+    "headlineSetFunding": "Tip Card Funding",
     "text": "This tip card has not been funded with sats yet. Specify the amount and the message you want the recipient to see in their wallet.",
     "textFunded": "This Tip Card is already funded with ({amountAndUnit}) and can be given to somebody who is in need of some orange pilling.",
     "textUsed": "This card was funded with {amountAndUnit} and has been redeemed.",
+    "textSetFunding": "This card will be funded as soon as the invoice of the set is paid. Please come back later.",
     "amountAndUnit": "{amount} BTC",
     "form": {
-      "textHint": "will be displayed in the recipient's wallet",
+      "textHint": "Will be displayed in the recipient's wallet",
       "notePlaceholder": "Notes / handed out to",
-      "noteHint": "will be displayed on the status section of your Tip Cards set",
-      "button": "Load card"
+      "noteHint": "Will be displayed on the status section of your Tip Cards set",
+      "button": "Fund card"
     },
     "invoiceText": "Fund your Tip Card with {amount} sats:",
     "invoiceExpired": "The lightning invoice for this card has expired. Please reset the Tip Card to continue.",
@@ -110,6 +117,28 @@
       "finishDisabledTooltip": "You need to fund this card first.",
       "buttonMakeShared": "Activate shared funding on this Tip Card"
     }
+  },
+  "setFunding": {
+    "title": "Set funding",
+    "headline": "Set funding",
+    "setName": "Set name: {setName}",
+    "amountAndUnit": "{amount} BTC",
+    "text": "This set has {numberOfCardsToFund} cards with no sats on them. Specify the amount per card and the message you want the recipient to see in their wallet. The total invoice will be {amountAndUnit}.",
+    "textFundingNotPossible": "Some cards of this set have already been used. Create a new set to fund a whole set.",
+    "invoiceText": "Fund {numberOfCardsToFund} cards by paying a single invoice of {amountAndUnit}.",
+    "textFunded": "All {numberOfCardsToFund} cards of this set have been funded with {amountAndUnitPerCard} each.",
+    "form": {
+      "amountLabel": "Amount per card",
+      "smallAmountWarning": "Warning: Small amounts per card may cause issues for the recipient when trying to receive their sats. We recommend to use a minimum of 210 sats per card.",
+      "totalAmountLabel": "Total amount",
+      "textHint": "Will be displayed in the recipient's wallet",
+      "notePlaceholder": "Notes / handed out to",
+      "noteHint": "Will be displayed on the status section of your Tip Cards set",
+      "button": "Fund set"
+    },
+    "resetInvoice": "Reset Set Invoice",
+    "resetDisabledTooltip": "This set has already been funded",
+    "backToSet": "Back to the cards"
   },
   "index": {
     "buttonCreate": "Create your Tip Cards set ⚡",
@@ -136,6 +165,7 @@
       "labelFunded": "Funded",
       "labelPendingFunding": "Funding in progress",
       "labelPendingSharedFunding": "Shared funding in progress",
+      "labelPendingSetFunding": "Set funding in progress",
       "labelNote": "Note",
       "labelViewed": "Viewed by recipient",
       "reload": "Reload"
@@ -148,21 +178,33 @@
       "cardQrCodeLogoLabel": "Logo on QR codes",
       "cardQrCodeLogo": {
         "noLogo": "No logo"
-      },
-      "setName": "Set name"
+      }
     },
-    "buttonSaveCardsSet": "Save Tip Cards set",
-    "buttonDeleteCardsSet": "Delete saved set",
-    "buttonPrint": "Print Tip Cards",
-    "buttonDownloadPngs": "Download PNGs",
-    "saveSetConfirm": "The current Tip Cards set will be saved locally in this browser, using localStorage.\n\nYou can also use the URL (from the address bar) to access this Tip Cards set.\n\nContinue?",
-    "deleteSetConfirm": "Do you really want to delete the current Tip Cards set and its settings from this browser?",
-    "filterLabel": "Display cards:",
-    "filter": {
-      "all": "All",
-      "unfunded": "Unfunded",
-      "funded": "Funded",
-      "used": "Redeemed"
+    "actions": {
+      "headline": "Actions",
+      "buttonPrint": "Print Tip Cards",
+      "buttonDownloadPngs": "Download PNGs",
+      "setName": "Set name",
+      "buttonSaveCardsSet": "Save Tip Cards set",
+      "buttonDeleteCardsSet": "Delete saved set",
+      "saveSetConfirm": "The current Tip Cards set will be saved locally in this browser, using localStorage.\n\nYou can also use the URL (from the address bar) to access this Tip Cards set.\n\nContinue?",
+      "deleteSetConfirm": "Do you really want to delete the current Tip Cards set and its settings from this browser?",
+      "setFunding": {
+        "intro": "You can fund single Tip Cards by scanning the QR code of a new card. If you want to fund all cards of this set at once, use the \"Set funding\" feature.",
+        "label": "Fund all cards at once",
+        "button": "Fund set",
+        "disabledReason": "Some cards of this set have already been used. Create a new set to fund a whole set."
+      }
+    },
+    "cards": {
+      "headline": "Tip Cards",
+      "filterLabel": "Display cards:",
+      "filter": {
+        "all": "All",
+        "unfunded": "Unfunded",
+        "funded": "Funded",
+        "used": "Redeemed"
+      }
     }
   },
   "lightningQrCode": {
