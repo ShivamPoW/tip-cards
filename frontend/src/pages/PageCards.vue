@@ -148,7 +148,7 @@
     </div>
     <div class="px-4 my-5">
       <HeadlineDefault level="h3" class="mb-2">
-        Speichern <!-- {{ t('cards.actions.print.headline') }} -->
+        {{ t('cards.actions.saveHeadline') }}
       </HeadlineDefault>
       <label class="block mb-1">
         <span class="block">
@@ -178,7 +178,7 @@
     </div>
     <div class="px-4 my-5">
       <HeadlineDefault level="h3" class="mb-2">
-        Drucken <!-- {{ t('cards.actions.print.headline') }} -->
+        {{ t('cards.actions.printHeadline') }}
       </HeadlineDefault>
       <ButtonDefault
         class="text-sm min-w-[170px]"
@@ -198,7 +198,7 @@
     </div>
     <div class="px-4 my-5">
       <HeadlineDefault level="h3" class="mb-2">
-        Alle aufladen <!-- {{ t('cards.actions.print.headline') }} -->
+        {{ t('cards.actions.setFunding.headline') }}
       </HeadlineDefault>
       <ParagraphDefault class="text-sm">
         {{ t('cards.actions.setFunding.intro') }}
@@ -415,7 +415,7 @@ import CardStatusComponent from '@/components/CardStatus.vue'
 import ButtonWithTooltip from '@/components/ButtonWithTooltip.vue'
 import {
   type Settings,
-  initialSettings,
+  getDefaultSettings,
   useCardsSets,
   encodeCardsSetSettings,
   decodeCardsSetSettings,
@@ -444,7 +444,7 @@ const {
 //
 const setId = computed(() => route.params.setId == null || route.params.setId === '' ? undefined : String(route.params.setId))
 
-const settings = reactive({ ...initialSettings })
+const settings = reactive(getDefaultSettings())
 
 const saveCardsSet = () => {
   if (setId.value == null) {
@@ -487,7 +487,7 @@ const putSettingsIntoUrl = async () => {
   }
 
   let settingsForUrl = ''
-  if (!isEqual(settings, initialSettings)) {
+  if (!isEqual(settings, getDefaultSettings())) {
     settingsForUrl = encodeCardsSetSettings(settings)
   }
   
@@ -525,7 +525,10 @@ onMounted(() => {
   urlChanged()
   putSettingsIntoUrl()
 })
-  
+
+// https://gitlab.satoshiengineering.com/satoshiengineering/projects/-/issues/425
+window.addEventListener('pageshow', () => reloadStatusForCards())
+
 watch(() => route.fullPath, urlChanged)
 
 const hasBeenSaved = computed(() => {

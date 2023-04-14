@@ -208,16 +208,16 @@ import { rateBtcEur } from '@/modules/rateBtcFiat'
 import { loadCardStatus } from '@/modules/loadCardStatus'
 import hashSha256 from '@/modules/hashSha256'
 import { BACKEND_API_ORIGIN } from '@/constants'
-import { type Settings, initialSettings, decodeCardsSetSettings } from '@/modules/cardsSets'
+import { type Settings, getDefaultSettings, decodeCardsSetSettings } from '@/modules/cardsSets'
 
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 
 const initializing = ref(true)
-const settings = reactive({ ...initialSettings })
+const settings = reactive(getDefaultSettings())
 const amountPerCard = ref(2100)
-const text = ref('Have fun with Bitcoin :)')
+const text = ref(t('cards.settings.defaults.invoiceText'))
 const textIsDirty = ref(false)
 const note = ref<string>()
 const noteIsDirty = ref(false)
@@ -319,7 +319,7 @@ const resetInvoice = async () => {
       amountPerCard.value = 2100
       userErrorMessage.value = undefined
       creatingInvoice.value = false
-      text.value = 'Have fun with Bitcoin :)'
+      text.value = t('cards.settings.defaults.invoiceText')
       textIsDirty.value = false
       note.value = undefined
       noteIsDirty.value = false

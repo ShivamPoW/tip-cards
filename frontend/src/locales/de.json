@@ -192,18 +192,26 @@
       "cardQrCodeLogoLabel": "Logo auf den QR-Codes",
       "cardQrCodeLogo": {
         "noLogo": "Kein Logo"
+      },
+      "defaults": {
+        "cardHeadline": "Hey :)",
+        "cardCopytext": "Trinkgeld für dich. 🎉\nScanne den QR-Code und erfahre, wie du zu deinen Bitcoin kommst.",
+        "invoiceText": "Viel Spaß mit Bitcoin :)"
       }
     },
     "actions": {
       "headline": "Aktionen",
+      "printHeadline": "Drucken",
       "buttonPrint": "Tip Cards drucken",
       "buttonDownloadPngs": "PNGs downloaden",
       "setName": "Set-Name",
+      "saveHeadline": "Speichern",
       "buttonSaveCardsSet": "Set speichern",
       "buttonDeleteCardsSet": "Set löschen",
       "saveSetConfirm": "Das aktuelle Tip Cards-Set wird lokal in diesem Browser gespeichert (dafür wird localStorage verwendet).\n\nDu kannst auch die URL (siehe Browser-Adressleiste) verwenden um später erneut auf dieses Tip Cards-Set zuzugreifen.\n\nMöchtest du speichern?",
       "deleteSetConfirm": "Möchtest du die Einstellungen des aktuellen Tip Cards-Sets wirklich aus dem Browser löschen?",
       "setFunding": {
+        "headline": "Alle aufladen",
         "intro": "Du kannst die Tip Cards einzeln aufladen, indem du den QR-Code einer neuen Karte scannst. Wenn du alle Karten eines Sets auf einmal aufladen willst, verwende die Funktion \"Set aufladen\".",
         "label": "Alle Karten auf einmal aufladen",
         "button": "Set aufladen",
