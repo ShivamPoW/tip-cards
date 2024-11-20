@@ -32,7 +32,7 @@ router.get('/', authGuardAccessToken, async (_, res) => {
     })
     return
   }
-  const userId: string = accessTokenPayload.id
+  const userId: string = accessTokenPayload.userId
 
   // load set from database
   let sets: SetRedis[] | null = null
@@ -64,7 +64,7 @@ router.post('/:setId', authGuardAccessToken, async (req, res) => {
     })
     return
   }
-  const userId: string = accessTokenPayload.id
+  const userId: string = accessTokenPayload.userId
   let settings: Settings | null = null
   let created: number | null = null
   let date: number | null = null
