@@ -7,6 +7,7 @@
         type="number"
         inputmode="decimal"
         :min="inputMin"
+        :max="inputMax"
         :step="inputStep"
         @input="onInput"
       >
@@ -24,7 +25,7 @@
       @click="changeSelectedCurrency"
     >
       {{ selectedCurrency }}
-      <i class="bi bi-arrow-down-up" />
+      <IconArrowDownUp class="inline h-[1em] w-[1em]" />
     </button>
   </div>
 </template>
@@ -32,22 +33,31 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, watch } from 'vue'
 
+import IconArrowDownUp from '@/components/icons/IconArrowDownUp.vue'
 import formatNumber from '@/modules/formatNumber'
 
 const rateBtcSats = 100 * 1000 * 1000
 
 const selectedCurrency = ref<string>('sats')
-const alternateCurrency = computed(() => selectedCurrency.value === 'EUR' ? 'BTC' : 'EUR')
+const alternateCurrency = computed(() => {
+  if (selectedCurrency.value === 'EUR') {
+    return 'BTC'
+  }
+  if (props.rateBtcEur != null && props.rateBtcEur > 0) {
+    return 'EUR'
+  }
+  return selectedCurrency.value === 'sats' ? 'BTC' : 'sats'
+})
 const amount = ref<string>()
 
 const alternateAmount = computed(() => {
-  if (props.rateBtcEur == null) {
-    return undefined
-  }
-  if (alternateCurrency.value === 'EUR') {
+  if (alternateCurrency.value === 'EUR' && props.rateBtcEur != null && props.rateBtcEur > 0) {
     return formatNumber(props.amountSats / rateBtcSats * props.rateBtcEur, 2, 2)
   }
-  return formatNumber(props.amountSats / rateBtcSats, 8, 8)
+  if (alternateCurrency.value === 'BTC') {
+    return formatNumber(props.amountSats / rateBtcSats, 8, 8)
+  }
+  return props.amountSats
 })
 
 const inputStep = computed(() => {
@@ -70,6 +80,19 @@ const inputMin = computed(() => {
   return props.min / rateBtcSats
 })
 
+const inputMax = computed(() => {
+  if (props.max == null) {
+    return undefined
+  }
+  if (selectedCurrency.value === 'sats') {
+    return props.max
+  }
+  if (selectedCurrency.value === 'EUR' && props.rateBtcEur != null && props.rateBtcEur > 0) {
+    return formatNumber(props.max / rateBtcSats * props.rateBtcEur, 2, 2, undefined, 'en')
+  }
+  return props.max / rateBtcSats
+})
+
 const props = defineProps({
   amountSats: {
     type: Number,
@@ -82,6 +105,10 @@ const props = defineProps({
   min: {
     type: Number,
     default: 0,
+  },
+  max: {
+    type: Number,
+    default: undefined,
   },
 })
 
@@ -106,11 +133,11 @@ const onInput = (event: Event) => {
 }
 
 const changeSelectedCurrency = () => {
-  if (selectedCurrency.value === 'sats') {
+  if (selectedCurrency.value === 'sats' && props.rateBtcEur != null && props.rateBtcEur > 0) {
     selectedCurrency.value = 'EUR'
     return
   }
-  if (selectedCurrency.value === 'EUR') {
+  if (selectedCurrency.value === 'sats' || selectedCurrency.value === 'EUR') {
     selectedCurrency.value = 'BTC'
     return
   }

@@ -1,133 +1,155 @@
 <template>
-  <div
-    class="flex justify-center items-center fixed top-0 left-0 right-0 w-full h-full p-4 overflow-x-hidden overflow-y-auto bg-grey bg-opacity-50"
-    @click="$emit('close')"
+  <ModalDefault
+    data-test="modal-login"
+    @close="$emit('close')"
   >
-    <div
-      class="relative w-full h-full max-w-2xl md:h-auto"
-      @click.stop
-    >
-      <!-- Modal content -->
-      <div class="relative bg-white rounded-lg shadow p-4">
-        <div class="flex items-start justify-between mb-4">
-          <HeadlineDefault level="h3">
-            {{ t('auth.login') }}
-          </HeadlineDefault>
-          <button
-            type="button"
-            class="text-grey bg-transparent hover:bg-grey-light hover:text-grey-dark rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
-            @click="$emit('close')"
-          >
-            <svg
-              class="w-5 h-5"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </button>
-        </div>
-        <p class="mb-4">
-          {{ t('auth.text') }}
-        </p>
-        <div v-if="loggedIn">
-          logged in as: {{ userKey }}
-        </div>
-        <AnimatedLoadingWheel v-else-if="fetchingLogin" />
-        <LightningQrCode
-          v-else-if="lnurl != null"
-          :value="lnurl"
-        />
-      </div>
+    <div class="text-center">
+      <HeadlineDefault level="h1">
+        {{ $t('auth.modalLogin.headline') }}
+      </HeadlineDefault>
+      <ParagraphDefault
+        v-if="modalLoginUserMessage != null"
+        class="mb-5 p-3 border border-red-500 text-red-500"
+        data-test="modal-login-user-message"
+      >
+        {{ modalLoginUserMessage }}
+      </ParagraphDefault>
+      <ParagraphDefault v-if="loginFailed" class="mb-4 text-red-500">
+        {{ $t('auth.modalLogin.loginErrorText') }}
+      </ParagraphDefault>
+      <ParagraphDefault v-else-if="!isLoggedIn" class="mb-3">
+        {{ $t('auth.modalLogin.text') }}
+      </ParagraphDefault>
+
+      <LightningQrCode
+        v-if="fetchingLogin || lnurl != null"
+        class="my-7"
+        :headline="$t('auth.modalLogin.qrCodeHeadline')"
+        :value="lnurl || 'lnurl:loadingloadingloading'"
+        :loading="fetchingLogin"
+        :error="loginFailed ? $t('auth.modalLogin.loginErrorText') : undefined"
+        :success="isLoggedIn"
+      />
+      <ParagraphDefault v-if="isLoggedIn && missingEmail" class="mt-12 text-sm">
+        {{ $t('auth.modalLogin.emailHint') }}
+        <br>
+        <LinkDefault
+          :to="{ name: 'user-account', params: { lang: $route.params.lang } }"
+          data-test="emailCta"
+          @click="$emit('close')"
+        >
+          {{ $t('auth.modalLogin.emailCta') }}
+        </LinkDefault>
+      </ParagraphDefault>
+      <ParagraphDefault v-if="!isLoggedIn" class="mt-12 mb-4 text-sm">
+        {{ $t('auth.modalLogin.cookieWarning') }}
+      </ParagraphDefault>
+      <ButtonContainer>
+        <ButtonDefault
+          class="min-w-[170px]"
+          variant="secondary"
+          data-test="modal-login-close-button"
+          @click="$emit('close')"
+        >
+          {{ !isLoggedIn ? $t('general.cancel') : $t('general.close') }}
+        </ButtonDefault>
+      </ButtonContainer>
     </div>
-  </div>
+  </ModalDefault>
 </template>
 
 <script lang="ts" setup>
-import axios from 'axios'
-import { io, Socket } from 'socket.io-client'
+import type { Unsubscribable } from '@trpc/server/observable'
+import { storeToRefs } from 'pinia'
 import { onBeforeMount, onBeforeUnmount, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 
-import HeadlineDefault from '@/components/typography/HeadlineDefault.vue'
-import AnimatedLoadingWheel from '@/components/AnimatedLoadingWheel.vue'
+import { LnurlAuthLoginStatusEnum } from '@shared/auth/data/trpc/LnurlAuthLoginDto'
+
+import { useProfileStore } from '@/stores/profile'
+import useTRpcAuth from '@/modules/useTRpcAuth'
+import ModalDefault from '@/components/ModalDefault.vue'
 import LightningQrCode from '@/components/LightningQrCode.vue'
-import { useUserStore } from '@/stores/user'
-import { BACKEND_API_ORIGIN } from '@/constants'
+import ButtonDefault from '@/components/buttons/ButtonDefault.vue'
+import LinkDefault from '@/components/typography/LinkDefault.vue'
+import ParagraphDefault from '@/components/typography/ParagraphDefault.vue'
+import { useAuthStore } from '@/stores/auth'
+import { useModalLoginStore } from '@/stores/modalLogin'
+import HeadlineDefault from './typography/HeadlineDefault.vue'
+import ButtonContainer from './buttons/ButtonContainer.vue'
 
-const { t } = useI18n()
-const emit = defineEmits(['close'])
-const { login } = useUserStore()
+defineEmits(['close'])
+
+const authStore = useAuthStore()
+const { login } = authStore
+const { isLoggedIn } = storeToRefs(authStore)
+
+const profileStore = useProfileStore()
+const { subscribe } = profileStore
+const { userEmail } = storeToRefs(profileStore)
+
+const modalLoginStore = useModalLoginStore()
+const { modalLoginUserMessage } = storeToRefs(modalLoginStore)
 
 const fetchingLogin = ref(true)
 const lnurl = ref<string>()
-const hash = ref<string>()
-const loggedIn = ref(false)
-const userKey = ref<string>()
-let socket: Socket
+const loginFailed = ref(false)
+const missingEmail = ref(false)
+let subscription: Unsubscribable
 
-onBeforeMount(async () => {
+const safeLogin = async (hash: string) => {
+  fetchingLogin.value = true
   try {
-    const response = await axios.get(`${BACKEND_API_ORIGIN}/api/auth/create`)
-    if (response.data.status === 'success') {
-      lnurl.value = response.data.data.encoded
-      hash.value = response.data.data.hash
-    }
-  } catch(error) {
+    await login(hash)
+  } catch (error) {
+    loginFailed.value = true
     console.error(error)
-  }
-  connectSocket()
-  fetchingLogin.value = false
-})
-const connectSocket = () => {
-  socket = io(BACKEND_API_ORIGIN)
-  socket.on('loggedIn', ({ jwt }) => {
-    login({ jwt })
-    emit('close')
-  })
-  socket.on('connect', () => {
-    socket.emit('waitForLogin', { hash: hash.value })
-  })
-}
-onBeforeUnmount(() => {
-  hash.value = undefined
-  if (socket != null) {
-    socket.close()
-  }
-})
-
-/////
-// reconnect on tab change (connection gets lost on smartphones sometimes)
-const reconnectOnVisibilityChange = () => {
-  if (document.visibilityState !== 'visible' || socket == null || hash.value == null) {
     return
   }
-  socket.close()
-  connectSocket()
-}
-onBeforeMount(() => {
-  document.addEventListener('visibilitychange', reconnectOnVisibilityChange)
-})
-onBeforeUnmount(() => {
-  document.removeEventListener('visibilitychange', reconnectOnVisibilityChange)
-})
 
-/////
-// close on escape
-const onKeyDown = (event: KeyboardEvent) => {
-  if (event.key === 'Escape') {
-    emit('close')
+  modalLoginUserMessage.value = null
+  try {
+    await subscribe()
+    if (typeof userEmail.value != 'string' || userEmail.value.length < 1) {
+      missingEmail.value = true
+    }
+  } catch (error) {
+    console.error(error)
   }
 }
-onBeforeMount(() => {
-  document.addEventListener('keydown', onKeyDown)
+
+const trpcAuth = useTRpcAuth()
+onBeforeMount(async () => {
+  subscription = trpcAuth.lnurlAuth.login.subscribe(
+    undefined,
+    {
+      onData: (lnurlAuthLoginDto) => {
+        if (lnurlAuthLoginDto.data.status === LnurlAuthLoginStatusEnum.enum.lnurlCreated) {
+          fetchingLogin.value = false
+          lnurl.value = lnurlAuthLoginDto.data.lnurlAuth
+          return
+        }
+
+        subscription?.unsubscribe()
+
+        if (
+          lnurlAuthLoginDto.data.status === LnurlAuthLoginStatusEnum.enum.loggedIn
+          && lnurlAuthLoginDto.data.hash != null
+        ) {
+          safeLogin(lnurlAuthLoginDto.data.hash)
+        } else if (lnurlAuthLoginDto.data.status === LnurlAuthLoginStatusEnum.enum.failed) {
+          loginFailed.value = true
+        }
+      },
+      onError: (error) => {
+        loginFailed.value = true
+        console.error('trpc.subscription.onError', error)
+      },
+    },
+  )
 })
+
 onBeforeUnmount(() => {
-  document.removeEventListener('keydown', onKeyDown)
+  lnurl.value = undefined
+  subscription?.unsubscribe()
 })
 </script>

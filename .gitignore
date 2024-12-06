@@ -12,9 +12,11 @@ node_modules
 dist
 dist-ssr
 dist-www
+dist-libs
 build
 coverage
 *.local
+ngrok.yml
 
 /cypress/videos/
 /cypress/screenshots/
@@ -22,6 +24,7 @@ coverage
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
 .idea
 *.suo
 *.ntvs*
@@ -29,3 +32,8 @@ coverage
 *.sln
 *.sw?
 /docs/examples/redis/.env
+
+# backend
+files/
+lnurl.auth.pem
+lnurl.auth.pem.pub

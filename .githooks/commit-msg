@@ -1,23 +1,48 @@
-#!/bin/bash
+#!/usr/bin/env node
 
-echo "Checking commit-message format..."
+import fs from 'fs';
+import config from './commit-msg-config.json' with { type: 'json' }
 
-## the first arg is the path to the git commit temporary file
-TEMPORARY_FILE_PATH=$1
+// Regex to validate the commit message
+const allowedTypes = config.types.join('|')
+const allowedScopes = config.scopes.join('|')
 
-## get commit-message from the temporary file
-COMMIT_MSG=`head -n1 $TEMPORARY_FILE_PATH`
+const header = `(${allowedTypes}){1}(\\((${allowedScopes})+\\))?(!)?: ([\\w .,?\\/\\-'])+`
+const body = '(\\n\\n[\\s\\S]*)?'
+const breakingChange = '(\\nBREAKING(-| )CHANGE: \\S[ \\S]*\\S)?'
+const reviewedBy = '(\\nReviewed-by: \\S[ \\S]*\\S)?'
+const refs = '(\\nRefs:( projects#[0-9]+)+)'
+const suffix = '(\\n[\\s\\S]+)?'
 
-## init regex to match commit-message format
-REGEX="^\[([A-Z]+)\] .+( projects#[0-9]+)+$"
+const regex = new RegExp(`^${header}${body}\\n${breakingChange}${reviewedBy}${refs}${suffix}$`)
 
-## checking commit-message format
-if ! [[ $COMMIT_MSG =~ $REGEX ]];then
-    echo -e "Your commit-message format is not valid:\n$COMMIT_MSG\n"
-    echo -e "Valid example:\n[TASK] Example commit msg projects#123"
-    exit 1
-else
-    echo "Commit-message is valid."
-    exit 0
-fi
+// Path to the commit message file
+const commitMsgFile = process.argv[2]
 
+// Read the commit message from the file
+const commitMsg = fs.readFileSync(commitMsgFile, 'utf-8').trim()
+
+// Validate the commit message against the regex
+if (!regex.test(commitMsg)) {
+  console.error(`❌ Commit message is invalid:\n\n\x1b[31m${commitMsg}\x1b[0m\n\n`)
+  console.info(
+`ℹ️  Expected format:
+    
+\x1b[32m<type>(<scope>): <subject>
+<BLANK LINE>
+<body> (optional)
+<BLANK LINE> (required if body is present)
+BREAKING CHANGE: <description> (optional)
+Reviewed-by: <reviewer> (optional)
+Refs: projects#<issue-number> (required)\x1b[0m
+  
+
+Allowed types: ${config.types.join(', ')}
+Allowed scopes: ${config.scopes.join(', ')}
+Subject can contain .,?/-' characters
+`)
+  process.exit(1)
+}
+
+console.log('✅ Commit message is valid.')
+process.exit(0)

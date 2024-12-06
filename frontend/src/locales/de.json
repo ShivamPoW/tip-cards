@@ -1,21 +1,86 @@
 {
   "general": {
     "back": "Zurück",
-    "cards": "{count} Karte | {count} Karten"
+    "cards": "{count} Karte | {count} Karten",
+    "userAccount": "Account",
+    "login": "Login",
+    "logout": "Logout",
+    "close": "Schließen",
+    "cancel": "Abbrechen",
+    "getStarted": "Jetzt losstarten",
+    "status": "Status",
+    "search": "Suche"
+  },
+  "header": {
+    "mainNavLabel": "Hauptnavigation",
+    "langNavLabel": "Sprachnavigation",
+    "loginBanner": {
+      "claim": "{login}, um deine TipCards-Sets zu speichern, den Status zu überprüfen und deine Sats zurückzuholen.",
+      "login": "Einloggen"
+    }
   },
   "nav": {
     "index": "Home",
-    "cards": "Erstellen",
-    "preview": "Landing page",
-    "about": "Über"
+    "cards": "Set erstellen",
+    "landing": "Landing page",
+    "about": "Über",
+    "privacyPolicy": "Datenschutz",
+    "legalNotice": "Impressum",
+    "goToAccount": "zum Account",
+    "sets": "Meine Sets",
+    "faqs": "FAQs",
+    "statistics": "Statistiken"
   },
   "footer": {
-    "support": "Hast du Fragen, Feedback, ein Problem oder einen Bug entdeckt? Schreib uns an {email}."
+    "mostRelevantFaqs": {
+      "title": "Bug, Feedback oder Fragen?",
+      "subTitle": "Wir sind stetig dabei uns zu verbessern!",
+      "buttonToFaqs": "Zu den FAQs"
+    }
+  },
+  "faqs": {
+    "title": "Häufig gestellte Fragen",
+    "intro": "Hier findest du Antworten auf die am häufigsten gestellten Fragen. Wir sind stetig dabei uns zu verbessern!",
+    "questions": {
+      "support": {
+        "question": "Ich habe Fragen, Feedback, ein Problem oder einen Bug entdeckt. An wen kann ich mich wenden?",
+        "answer": "Schreib uns an {supportEmail}."
+      },
+      "monitorCards": {
+        "question": "Wie kann ich verfolgen, welche Karten eingelöst wurden?",
+        "answer": "Gehe auf die Seite, auf der du dein TipCards-Set erstellt hast. Im oberen Teil siehst du eine Übersicht aller Karten in deinem Set, die aufgeladen, angesehen oder eingelöst wurden."
+      },
+      "getBackSats": {
+        "question": "Wie kann ich nicht eingelöste Sats zurückholen?",
+        "answer": "Auf der Seite deines TipCards-Sets findest du einen Button \"Verbleibende Sats zurückholen\". Damit kannst du alle Karten dieses Sets, die noch einen Wert haben, auf einmal einlösen. Du musst eingeloggt sein, um diese Funktion zu nutzen."
+      },
+      "bulkFunding": {
+        "question": "Kann ich mehrere Karten auf einmal aufladen?",
+        "answer": "Klicke einfach auf \"Set aufladen\" auf der Konfigurationsseite des Sets und gib den Betrag in Sats pro Karte ein. Du kannst bis zu 100 Karten auf einmal aufladen."
+      },
+      "custodial": {
+        "question": "Ist TipCards ein custodial Service?",
+        "answer": "Lightning TipCards ist ein custodial Service und sollte nicht als Langzeitspeicher für deine Sats verwendet werden. Wir empfehlen dringend, keine größeren Beträge über einen längeren Zeitraum auf einer TipCard zu belassen."
+      },
+      "lightningNode": {
+        "question": "Welcher Lightning Node wird verwendet?",
+        "answer": "Wir verwenden den Node {lightningNode}."
+      },
+      "openSource": {
+        "question": "Kann ich TipCards selbst hosten? Ist das Projekt Open Source?",
+        "answer": "Ja. Du kannst deine eigene Version von Lightning TipCards hosten oder uns unterstützen, indem du Issues erstellst, Übersetzungen, Fehlerbehebungen oder neue Funktionen über Pull Requests auf {github} beiträgst."
+      },
+      "localStorageSets": {
+        "question": "Wo sind meine alten Sets?",
+        "answer": "Wenn du Sets vor September 2023 gespeichert hast, wurden diese lokal in deinem Browser gespeichert. Du kannst zu {localSetsPage} gehen, um sie anzusehen. Wir empfehlen dir, sie in deinem Konto zu speichern, damit du von jedem Gerät aus darauf zugreifen kannst."
+      }
+    }
   },
   "landing": {
     "title": "Hol dir deine Bitcoin",
-    "titlePreview": "Vorschau – Hol dir deine Bitcoin",
     "introGreeting": "Hi!",
+    "introGreetingFunded": "Gratulation!",
+    "introMessage": "Du wurdest mit Bitcoin beschenkt.{linebreak}Hol sie dir gleich!",
     "introMessageReceiveBtc": {
       "message": "Hier kannst du dir {amountAndUnit} holen.",
       "amountAndUnit": "{amount} Bitcoin",
@@ -24,7 +89,7 @@
       "footnote": "über Lightning"
     },
     "introMessagePreview": {
-      "headline": "Scanne eine Lightning Tip Card um dir Bitcoin zu holen.",
+      "headline": "Scanne eine Lightning TipCard um dir Bitcoin zu holen.",
       "message": "Du kannst dir Bitcoin auch an einer Crypto-Börse (z.B. {exchange}), einem Bitcoin-Automaten (z.B. {atm}) oder bei einem Bitcoin-Broker (z.B. {broker}) etc. kaufen."
     },
     "introMessageAlreadyUsed": {
@@ -36,11 +101,19 @@
       "message": "Mehr Bitcoin kannst du dir an einer Crypto-Börse (wie {exchange}), einem Bitcoin-Automaten (z.B. von {atm}) oder bei einem Bitcoin-Broker (beispielsweise {broker}) etc. kaufen."
     },
     "sectionBitcoin": {
+      "title": "Was genau ist Bitcoin?",
       "paragraphs": {
         "0": "Bitcoin ist eine <strong>digitale Währung</strong>.",
         "1": "Sie wird von allen Teilnehmerinnen und Teilnehmern des Bitcoin-Netzwerks verwaltet, das bedeutet, sie ist <strong>nicht unter Kontrolle</strong> einer Zentralbank, Regierung oder eines Konzerns.",
         "2": "Überweisungen (auch internationale) sind so einfach wie das Scannen eines QR-Codes. Probier es einfach aus!"
-      }
+      },
+      "headline": "Was ist Bitcoin?"
+    },
+    "sectionGetYourBitcoin": {
+      "headline": "So holst du dir deine Bitcoin",
+      "explanation": "Hast du eine Lightning&#8209;Wallet installiert, <strong>scanne erneut</strong> den QR&#8209;Code auf deiner <strong>TipCard</strong> mit deiner Wallet oder <strong>drücke</strong> auf folgenden QR&#8209;Code:",
+      "qrCodeHeadline": "Drücke auf den Qr-Code unten",
+      "noWallet": "Noch keine Lightning-Wallet?"
     },
     "sectionWallet": {
       "headline": "Installiere eine Wallet",
@@ -55,17 +128,20 @@
       "statusNormal": {
         "explanation": "Sobald deine Wallet installiert ist,",
         "step1": "<strong>drücke</strong> auf den QR-Code unten oder",
-        "step2": "<strong>scanne</strong> den QR-Code auf deiner Tip Card erneut<br>(mit deiner Wallet-App)"
+        "step2": "<strong>scanne</strong> den QR-Code auf deiner TipCard erneut<br>(mit deiner Wallet-App)"
       },
       "statusReceived": {
         "congrats": "Gratulation!",
         "message": "Die Bitcoin wurden soeben in deine Wallet übertragen."
       }
     },
+    "sectionNoWallet": {
+      "headline": "Neu hier ohne Wallet?",
+      "explanation": "Installiere eine Wallet, um Bitcoin zu empfangen, zu speichern und auszugeben. Für den täglichen Gebrauch und kleine Beträge ist eine Smartphone-App ideal. Wir empfehlen folgende Wallets zum Einstieg:"
+    },
     "sectionUse": {
       "headline": "Verwende deine Bitcoin",
-      "message": "Du kannst mit deinen Bitcoin jetzt etwas in einem Geschäft oder auf einer Website, wo Bitcoin akzeptiert werden, kaufen. Oder du überweist sie in die Lightning Wallet eines Freundes oder einer Kollegin. Oder du hodlst* sie einfach.",
-      "messageFootnote": "* hodln = halten, sparen",
+      "message": "Du kannst mit deinen Bitcoin jetzt etwas in einem Geschäft oder auf einer Website, wo Bitcoin akzeptiert werden, kaufen. Oder du überweist sie in die Lightning Wallet eines Freundes oder einer Kollegin. Oder du hodlst (hodln = halten, sparen) sie einfach.",
       "examplesIntro": "Hier sind ein paar Links auf Sites, auf denen du Bitcoin verwenden kannst:",
       "examples": {
         "saltNDaisy": "Kauf dir nachhaltiges Granola",
@@ -75,35 +151,42 @@
         "lightningnetworkstores": "Finde heraus, was du online machen kannst",
         "coinpages": "Such nach Geschäften, die Bitcoin akzeptieren"
       },
-      "createYourOwnTipCardsHeadline": "Erstelle eigene Tip Cards ⚡",
-      "createYourOwnTipCardsText": "Möchtest du deinen Freundinnen oder Bekannten ein paar Sats (1 Sat = 0,00000001 Bitcoin) schenken oder jemandem Trinkgeld in Form von Bitcoin geben? Klick auf den folgenden Button und konfiguriere deine persönlichen Tip Cards.",
-      "createYourOwnTipCardsButton": "Meine eigenen Tip Cards erstellen"
+      "createYourOwnTipCardsHeadline": "Erstelle eigene TipCards ⚡",
+      "createYourOwnTipCardsText": "Möchtest du deinen Freundinnen oder Bekannten ein paar Sats (1 Sat = 0,00000001 Bitcoin) schenken oder jemandem Trinkgeld in Form von Bitcoin geben? Klick auf den folgenden Button und konfiguriere deine persönlichen TipCards.",
+      "createYourOwnTipCardsButton": "Meine eigenen TipCards erstellen"
     },
     "sectionMore": {
-      "headline": "Mehr über Bitcoin",
-      "text": "Es gibt viele Möglichkeiten, mehr über Bitcoin zu erfahren.",
       "0": {
+        "title": "Podcast „Bitcoin verstehen“",
         "text": "<strong>Bitcoin verstehen</strong> ist <em>der</em> deutschsprachige Podcast für Bitcoin-Einsteiger und neugierige Fortgeschrittene.",
         "linkLabel": "Bitcoin verstehen",
         "linkHref": "https://bitcoinverstehen.info/"
       },
       "1": {
-        "text": "Die <strong>BTC23</strong> ist die größte Bitcoin-Konferenz im deutschsprachigen Raum und findet von 14. bis 17. September 2023 in Innsbruck (Österreich) statt. Mit dem Gutscheincode \"<b>tipcards</b>\" bekommst du 5% Rabatt auf dein Ticket.",
-        "linkLabel": "Hol dir hier dein Ticket für die BTC23",
-        "linkHref": "https://pretix.eu/btc/23/c/bPCDAshzq/"
-      }
+        "title": "Noch ein weiterer Tipp",
+        "text": "<strong>Aprycot Media</strong> ist ein deutscher Verlag, der sich auf Bitcoin-Literatur spezialisiert hat. Hier findest du von Büchern über Blog-Posts bis hin zu einer umfangreichen Linksammlung alles was du brauchst um Bitcoin besser zu begreifen.",
+        "linkLabel": "Aprycot Mediathek",
+        "linkHref": "https://aprycot.media/thek/"
+      },
+      "headline": "Mehr über Bitcoin",
+      "text": "Es gibt viele Möglichkeiten, mehr über Bitcoin zu erfahren."
     },
+    "bulkWithdrawExists": "Die Sats von dieser TipCard werden gerade zurückgeholt. Wenn du die Karte verwenden möchtest, musst du das Zurückholen abbrechen.",
+    "bulkWithdrawPending": "Die Sats von dieser TipCard werden gerade zurückgeholt. Sollte dies länger als einige Minuten dauern, kontaktiere bitte den Support.",
+    "bulkWithdrawResetError": "Beim Abbruch des Zurückholens ist ein Fehler aufgetreten.",
     "errors": {
-      "errorInvalidLnurl": "Es scheint, als wäre die LNURL nicht von einer gültigen Tip Card."
+      "errorInvalidLnurl": "Es scheint, als wäre die LNURL nicht von einer gültigen TipCard.",
+      "errorLoadingCardStatus": "Der Status der TipCard konnte nicht geladen werden.",
+      "errorInvalidLandingPage": "Benutzerdefinierte Seite konnte nicht geladen werden."
     }
   },
   "funding": {
-    "title": "Lade die Tip Card auf",
-    "headline": "Lade die Tip Card auf",
-    "headlineFunded": "Die Tip Card wurde aufgeladen",
-    "headlineUsed": "Die Tip Card wurde eingelöst",
-    "headlineSetFunding": "Tip Card Funding",
-    "text": "Diese Tip Card wurde noch nicht mit Sats aufgeladen. Lege fest, welchen Betrag du aufladen möchtest und welche Nachricht die Empfängerin in ihrer Wallet sehen soll.",
+    "title": "Lade die TipCard auf",
+    "headline": "Lade die TipCard auf",
+    "headlineFunded": "Die TipCard wurde aufgeladen",
+    "headlineUsed": "Die TipCard wurde eingelöst",
+    "headlineSetFunding": "TipCard Funding",
+    "text": "Diese TipCard wurde noch nicht mit Sats aufgeladen. Lege fest, welchen Betrag du aufladen möchtest und welche Nachricht die Empfängerin in ihrer Wallet sehen soll.",
     "textFunded": "Die Karte wurde mit {amountAndUnit} aufgeladen und kann weitergegeben werden.",
     "textUsed": "Die Karte wurde mit {amountAndUnit} aufgeladen und eingelöst.",
     "textSetFunding": "Die Karte wird gemeinsam mit dem ganzen Set aufgeladen. Bezahle die Invoice für das Set um fortzufahren.",
@@ -111,25 +194,25 @@
     "form": {
       "textHint": "Wird in der Wallet des Empfängers angezeigt",
       "notePlaceholder": "Notizen / ausgegeben an",
-      "noteHint": "Wird im Statusbereich der Tip Cards Übersichtsseite angezeigt",
+      "noteHint": "Wird im Statusbereich der TipCards Übersichtsseite angezeigt",
       "button": "Jetzt aufladen"
     },
-    "invoiceText": "Lade {amount} Sats auf deine Tip Card:",
-    "invoiceExpired": "Die Rechnung für diese Karte ist bereits abgelaufen. Setze die Tip Card zurück um fortzufahren.",
-    "resetInvoice": "Tip Card zurücksetzen",
-    "resetDisabledTooltip": "Diese Tip Card wurde bereits mit Sats aufgeladen.",
+    "invoiceText": "Lade {amount} Sats auf deine TipCard:",
+    "invoiceExpired": "Die Rechnung für diese Karte ist bereits abgelaufen. Setze die TipCard zurück um fortzufahren.",
+    "resetInvoice": "TipCard zurücksetzen",
+    "resetDisabledTooltip": "Diese TipCard wurde bereits mit Sats aufgeladen.",
     "lnurlp": {
-      "text": "Zum Aufladen der Tip Card den QR Code mit der Wallet App scannen oder auf {buttonOpenInWallet} klicken und in der App den gewünschten Betrag eingeben."
+      "text": "Zum Aufladen der TipCard den QR Code mit der Wallet App scannen oder auf {buttonOpenInWallet} klicken und in der App den gewünschten Betrag eingeben."
     },
-    "lnurlpExpired": "Die Aufladefunktion dieser Tip Card ist leider abgelaufen. Setze sie zurück um fortzufahren.",
-    "lnurlpFundedExpired": "Die Aufladefunktion dieser Tip Card ist leider abgelaufen. Schließe sie ab um fortzufahren.",
+    "lnurlpExpired": "Die Aufladefunktion dieser TipCard ist leider abgelaufen. Setze sie zurück um fortzufahren.",
+    "lnurlpFundedExpired": "Die Aufladefunktion dieser TipCard ist leider abgelaufen. Schließe sie ab um fortzufahren.",
     "shared": {
-      "text": "Diese Tip Card kann gemeinsam von mehreren Personen aufgeladen werden. Den QR Code beliebig oft scannen/bezahlen und danach {buttonFinish}.",
+      "text": "Diese TipCard kann gemeinsam von mehreren Personen aufgeladen werden. Den QR Code beliebig oft scannen/bezahlen und danach {buttonFinish}.",
       "textEmpty": "Derzeit befinden sich noch keine Sats auf der Karte. Sobald die Karte zumindest einmal aufgeladen wurde, kann das Aufladen abgeschlossen werden.",
       "textPartiallyFunded": "Die Karte wurde bereits mit {amountAndUnit} aufgeladen. Sobald du die Aufladung abschließt, können die Bitcoin abgeholt werden.",
       "buttonFinish": "Aufladen abschließen",
       "finishDisabledTooltip": "Die Karte muss zuerst aufgeladen werden.",
-      "buttonMakeShared": "Tip Card gemeinsam aufladen"
+      "buttonMakeShared": "TipCard gemeinsam aufladen"
     }
   },
   "setFunding": {
@@ -147,17 +230,21 @@
       "totalAmountLabel": "Summe",
       "textHint": "Wird in der Wallet des Empfängers angezeigt",
       "notePlaceholder": "Notizen / ausgegeben an",
-      "noteHint": "Wird im Statusbereich der Tip Cards Übersichtsseite angezeigt",
+      "noteHint": "Wird im Statusbereich der TipCards Übersichtsseite angezeigt",
+      "landingPagesHeadline": "Landing Page",
+      "landingPagesHint": "Diese Seite wird beim Scannen der aufgeladenen Karte angezeigt.",
       "button": "Set aufladen"
     },
     "resetInvoice": "Set-Invoice zurücksetzen",
     "resetDisabledTooltip": "Dieses Set wurde bereits aufgeladen",
-    "backToSet": "Zurück zum Set"
+    "backToSet": "Zurück zum Set",
+    "invoiceExpired": "Die Rechnung für diess Set ist bereits abgelaufen. Setze die Set-Invoice zurück um fortzufahren."
   },
   "index": {
-    "buttonCreate": "Erstelle dein Tip Cards-Set",
-    "savedCardsSetsHeadline": "Gespeicherte Tip Cards-Sets",
-    "noSavedCardsSetsMessage": "In diesem Browser sind derzeit keine Tip Cards-Sets gespeichert",
+    "buttonLogin": "Einloggen mit LNURL-Auth",
+    "buttonCreate": "Erstelle dein TipCards-Set",
+    "savedCardsSetsHeadline": "Gespeicherte TipCards-Sets",
+    "noSavedCardsSetsMessage": "Du hast noch keine gespeicherten Sets",
     "unnamedSetNameFallback": "Unbenanntes Set",
     "youtube": {
       "create": {
@@ -170,18 +257,74 @@
       }
     }
   },
+  "home": {
+    "headline": "Die einfachste Art, mit Bitcoin Trinkgeld zu geben",
+    "intro": "Einfach TipCards ausdrucken, Sats aufladen und jemandem eine Freude machen.",
+    "buttonCreate": "Erstelle dein TipCards-Set",
+    "buttonSets": "Gespeicherte TipCards-Sets",
+    "quote": "Es ist leicht, bei alten Gewohnheiten zu bleiben. Alte Muster aufzubrechen {em}",
+    "quoteEm": "zahlt sich aber aus.",
+    "howItWorksHeadline": "Und so funktioniert's",
+    "howItWorksSlides": {
+      "create": {
+        "headline": "Erstellen",
+        "text": "Erstelle ein TipCards-Set mit einer oder mehreren TipCards. Diese kannst du nach deinem Belieben konfigurieren."
+      },
+      "print": {
+        "headline": "Drucken",
+        "text": "Drucke die TipCards aus und schneide sie zu."
+      },
+      "fund": {
+        "headline": "Aufladen",
+        "text": "Lade die TipCards mit Bitcoin auf."
+      },
+      "give": {
+        "headline": "Verschenken",
+        "text": "Verschenke die TipCards und mache jemandem eine Freude."
+      }
+    },
+    "videoGuidesHeadline": "Video Guides",
+    "videoGuidesText": "Du hast eine TipCard erhalten oder möchtest selbst eine erstellen? In unseren Video Guides zeigen dir wie das funktioniert.",
+    "videoGuidesSlides": {
+      "create": {
+        "headline": "Erstellen",
+        "text": "Konfiguriere deine TipCards, drucke sie aus und schneide sie zu.",
+        "link": "https://www.youtube.com/watch?v=Oq__BT6oVoM"
+      },
+      "use": {
+        "headline": "Verwenden",
+        "text": "Lade die TipCards auf oder löse sie ein.",
+        "link": "https://www.youtube.com/watch?v=26dj0580HYc"
+      }
+    }
+  },
+  "sets": {
+    "title": "Alle meine Sets",
+    "backLink": "Zur Startseite",
+    "newSet": "Neues Set",
+    "description": "Hier findest du eine Liste deiner erstellten Sets.",
+    "loginToSeeYourSets": "Melde dich an, um eine Liste deiner erstellten TipCards zu sehen.",
+    "noSavedCardsSetsMessage": "Du hast noch keine gespeicherten Sets",
+    "unnamedSetNameFallback": "Unbenanntes Set",
+    "setInfo": "Set-Info",
+    "noSetsMatchingFilter": "Keine Sets gefunden.",
+    "displayedSetsOfTotalSets": "{displayedSets} / {totalSets} Set | {displayedSets} / {totalSets} Sets"
+  },
   "cards": {
-    "title": "Tip Cards-Set",
+    "title": "TipCards-Set",
     "status": {
       "headline": "Status",
       "noCards": "Es wurden noch keine Karten aufgeladen. Der Status der Karten dieses Sets wird hier angezeigt, sobald die erste Karte aufgeladen ist.",
       "labelUsed": "Eingelöst",
+      "labelBulkWithdrawn": "Zurückgeholt",
       "labelFunded": "Aufgeladen",
-      "labelPendingFunding": "Wird aufgeladen",
+      "labelPendingFunding": "Warte auf Bezahlung",
       "labelPendingSharedFunding": "Wird gemeinsam aufgeladen",
-      "labelPendingSetFunding": "Set funding in progress",
+      "labelPendingSetFunding": "Wird mit dem Set aufgeladen",
+      "labelIsLockedByBulkWithdraw": "Wird zurückgeholt",
       "labelNote": "Notiz",
       "labelViewed": "Wurde angesehen",
+      "labelUnused": "Nicht aufgeladen",
       "reload": "Aktualisieren"
     },
     "settings": {
@@ -202,24 +345,34 @@
     "actions": {
       "headline": "Aktionen",
       "printHeadline": "Drucken",
-      "buttonPrint": "Tip Cards drucken",
+      "buttonPrint": "TipCards drucken",
       "buttonDownloadPngs": "PNGs downloaden",
       "setName": "Set-Name",
       "saveHeadline": "Speichern",
       "buttonSaveCardsSet": "Set speichern",
+      "buttonSaveDisabledTooltip": "Du kannst Sets nur speichern, wenn du eingeloggt bist. Alternativ kannst du auch die URL verwenden, um später erneut auf dieses Set zuzugreifen.",
       "buttonDeleteCardsSet": "Set löschen",
-      "saveSetConfirm": "Das aktuelle Tip Cards-Set wird lokal in diesem Browser gespeichert (dafür wird localStorage verwendet).\n\nDu kannst auch die URL (siehe Browser-Adressleiste) verwenden um später erneut auf dieses Tip Cards-Set zuzugreifen.\n\nMöchtest du speichern?",
-      "deleteSetConfirm": "Möchtest du die Einstellungen des aktuellen Tip Cards-Sets wirklich aus dem Browser löschen?",
+      "saveSetConfirm": "Das aktuelle TipCards Set wird lokal in diesem Browser gespeichert (dafür wird localStorage verwendet).\n\nDu kannst auch die URL (siehe Browser-Adressleiste) verwenden um später erneut auf dieses TipCards-Set zuzugreifen.\n\nMöchtest du speichern?",
+      "deleteSetConfirm": "Möchtest du die Einstellungen des aktuellen TipCards-Sets wirklich aus dem Browser löschen?",
+      "deleteSetOnServerConfirm": "Möchtest du das aktuelle TipCards-Set vom Server löschen?",
       "setFunding": {
         "headline": "Alle aufladen",
-        "intro": "Du kannst die Tip Cards einzeln aufladen, indem du den QR-Code einer neuen Karte scannst. Wenn du alle Karten eines Sets auf einmal aufladen willst, verwende die Funktion \"Set aufladen\".",
+        "intro": "Du kannst die TipCards einzeln aufladen, indem du den QR-Code einer neuen Karte scannst. Wenn du alle Karten eines Sets auf einmal aufladen willst, verwende die Funktion \"Set aufladen\".",
         "label": "Alle Karten auf einmal aufladen",
         "button": "Set aufladen",
-        "disabledReason": "In diesem Set befinden sich bereits verwendete Karten. Erstelle ein neues Set, um alle Karten auf einmal aufzuladen."
+        "disabledReason": "In diesem Set befinden sich bereits verwendete Karten. Erstelle ein neues Set, um alle Karten auf einmal aufzuladen.",
+        "labelAll": ""
+      },
+      "bulkWithdraw": {
+        "headline": "Nicht eingelöste Sats zurückholen",
+        "intro": "Wenn du alle verbleibenden Satoshis dieses Sets auf einmal zurückholen möchtest, klicke auf \"Sats zurückholen\".",
+        "label": "Alle Sats auf einmal zurückholen",
+        "button": "Sats zurückholen",
+        "disabledReason": "In diesem Set befinden sich keine aufgeladenen Karten."
       }
     },
     "cards": {
-      "headline": "Tip Cards",
+      "headline": "TipCards",
       "filterLabel": "Karten filtern:",
       "filter": {
         "all": "Alle",
@@ -227,7 +380,31 @@
         "funded": "Aufgeladen",
         "used": "Eingelöst"
       }
+    },
+    "errors": {
+      "unableToSaveSet": "Das Set konnte nicht am Server gespeichert werden.",
+      "unableToDeleteSet": "Das Set konnte nicht am Server gelöscht werden."
     }
+  },
+  "userAccount": {
+    "title": "Dein Account",
+    "profileFormHeadline": "Deine Daten",
+    "form": {
+      "accountName": "Accountname",
+      "accountNameHint": "Interne Account Bezeichnung, falls du mehrere Accounts/Lightning Nodes benutzt.",
+      "displayName": "Anzeigename",
+      "displayNameHint": "Für zukünftige Features. Wird nur verwendet falls du anderen TipCards Nutzern deinen Namen anzeigen möchtest.",
+      "emailAddress": "E-Mail-Adresse",
+      "emailAddressHint": "Für den Fall, dass du das Gerät oder die Lightning-Wallet verlierst, mit der du dich authentifiziert hast.",
+      "save": "Speichern"
+    },
+    "logoutAllOtherDevicesHint": "Es kann bis zu 5 Minuten dauern, bis diese Änderung auf den anderen Geräten wirksam wird.",
+    "errors": {
+      "unableToFetchProfile": "Profildaten konnten nicht geladen werden. Versuche es erneut oder überprüfe deine Internetverbindung.",
+      "unableToSaveProfile": "Profildaten konnten nicht gespeichert werden. Versuche es erneut oder überprüfe deine Internetverbindung.",
+      "unableToLogoutAllOtherDevices": "Beim Logout deiner anderen Geräte ist ein Fehler aufgetreten. Versuche es erneut oder überprüfe deine Internetverbindung."
+    },
+    "completeProfile": "Profil vervollständigen"
   },
   "lightningQrCode": {
     "buttonOpenInWallet": "In der Wallet öffnen",
@@ -245,5 +422,109 @@
         "afterCopyNextStep": "Füge sie jetzt<br>in deiner Wallet-App ein :)"
       }
     }
+  },
+  "auth": {
+    "modalLogin": {
+      "headline": "Hi, schön, dass du da bist!",
+      "qrCodeHeadline": "Login mit LNURL-Auth",
+      "text": "Einfach den QR-Code mit deiner Lightning-App scannen und loslegen. Du benötigst eine App, die LNURL-Auth unterstützt.",
+      "loginErrorText": "Etwas ist schiefgegangen. Bitte versuche es nochmal oder kontaktiere den Support.",
+      "cookieWarning": "Dein Login wird bis zum Ausloggen als Cookie im Browser gespeichert.",
+      "emailHint": "Für den Fall, dass du das Gerät oder die Lightning-Wallet verlierst, mit der du dich authentifiziert hast, kannst du deine E-Mail-Adresse hinterlegen.",
+      "emailCta": "E-Mail-Adresse auf der Account-Seite eintragen",
+      "close": "Schließen"
+    },
+    "buttonLogout": "Ausloggen",
+    "buttonLogoutAllOtherDevices": "Alle anderen Geräte ausloggen",
+    "errors": {
+      "refreshTokenExpired": "Dein Login ist abgelaufen. Dies passiert automatisch wenn du 28 Tage lang nicht aktiv warst.",
+      "refreshTokenDenied": "Du hast dich auf einem anderen Gerät ausgeloggt.",
+      "refreshTokenDefaultError": "Du wurdest ausgeloggt."
+    }
+  },
+  "stores": {
+    "cardsSets": {
+      "errors": {
+        "unableToLoadSetsFromBackend": "Sets vom Server konnten nicht geladen werden.",
+        "unableToMigrateSets": "Migration fehlgeschlagen. Du kannst die Sets händisch löschen und im eingeloggten Zustand neu abspeichern oder dich an den Support wenden.",
+        "setBelongsToAnotherUser": "Ein unbenanntes Set kann nicht am Server gespeichert werden, da es bereits von einem anderem Nutzer gespeichert wurde.",
+        "namedSetBelongsToAnotherUser": "\"{name}\" kann nicht am Server gespeichert werden, da es bereits von einem anderem Nutzer gespeichert wurde."
+      }
+    },
+    "profile": {
+      "errors": {
+        "unableToLoadFromBackend": "Account Daten konnten nicht geladen werden.",
+        "unableToSaveToBackend": "Account Daten konnten nicht gespeichert werden."
+      }
+    }
+  },
+  "components": {
+    "modalResolveLocalStorage": {
+      "headline": "TipCards-Sets übertragen",
+      "text": "Deine TipCards-Sets sind derzeit lokal im Browser gespeichert. Übertrage sie in deinen Account um von all deinen Geräten darauf zugreifen zu können.",
+      "migrate": "Sets übertragen",
+      "logout": "Ausloggen",
+      "confirmMigrate": "Jetzt übertragen?"
+    }
+  },
+  "localStorageDeprecation": {
+    "loginCta": "{loginCtaAction}, um deine Sets dauerhaft zu speichern.",
+    "loginCtaAction": "Log dich ein",
+    "message": "⚠️ Du hast TipCards Sets lokal im Browser gespeichert. Übertrage sie in deinen Account um von all deinen Geräten darauf zugreifen zu können.",
+    "buttonToLocalStorageSetsPage": "Zu den lokalen Sets",
+    "setsPage": {
+      "headline": "Lokale Sets",
+      "text": "Diese Sets sind lokal im Browser gespeichert. Log dich ein, um sie in deinem Account zu speichern und von all deinen Geräten darauf zuzugreifen.",
+      "explanation": "Klicke auf den Set Namen um das Set zu öffnen. Im eingeloggten Zustand kannst du es dann speichern. Alternativ kannst du dir die Set-Links auch als Lesezeichen speichern.",
+      "noSets": "Du hast keine Sets lokal gespeichert.",
+      "buttonClearAll": "Alle löschen",
+      "confirmClearAll": "Möchtest du wirklich alle lokalen Sets löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "buttonBack": "Zurück"
+    }
+  },
+  "bulkWithdraw": {
+    "title": "Sats zurückholen",
+    "headline": "Sats zurückholen",
+    "setName": "Set-Name: {setName}",
+    "amountAndUnit": "{amount} BTC",
+    "withdrawExists": "Das Zurückholen der verbleibenden Sats wurde bereits gestartet. Du musst abbrechen und neu starten, um einen neuen QR-Code anzuzeigen.",
+    "withdrawPending": "Das Zurückholen der verbleibenden Sats wurde bereits gestartet. Warte bis diese in deiner Lightning Wallet angekommen sind. Sollte dies länger als einige Minuten dauern, kontaktiere bitte den Support.",
+    "buttonReset": "Zurückholen abbrechen",
+    "buttonRestart": "Zurückholen neu starten",
+    "noFundedCards": "In diesem Set befinden sich keine aufgeladenen TipCards.",
+    "description": "Scanne den angezeigten QR-Code, um die Sats der ausgewählten TipCards zurückzuholen.",
+    "buttonCreate": "Jetzt zurückholen",
+    "genericErrorMessage": "Es ist ein Fehler aufgetreten.",
+    "reload": "Reload"
+  },
+  "about": {
+    "title": "Über Lightning TipCards",
+    "intro": "Lightning TipCards sind ein System für Trinkgeld- oder Geschenkkarten. Du kannst die Karten mit Bitcoin über das Lightning-Netzwerk aufladen, und die beschenkte Person kann sie dann einlösen. Die beschenkte Person bekommt eine kurze Einführung in Bitcoin und eine Empfehlung für eine Lightning-App, um ihre Reise in die Bitcoin-Welt zu starten.",
+    "openSource": {
+      "title": "Open Source",
+      "text": "Du kannst deine eigene Version der Lightning TipCards einrichten oder uns unterstützen, indem du Probleme meldest, Übersetzungen, Fehlerbehebungen oder neue Funktionen über Pull Requests auf GitHub beiträgst.",
+      "githubLinkTitle": "Lightning TipCards auf GitHub"
+    },
+    "terms": {
+      "title": "Nutzungsbedingungen",
+      "text": {
+        "1": "Durch den Zugriff auf diesen Service stimmst du den folgenden Nutzungsbedingungen zu:",
+        "2": "Dieses Programm wird in der Hoffnung verteilt, dass es nützlich ist, aber OHNE JEGLICHE GEWÄHRLEISTUNG; sogar ohne die implizite Gewährleistung der MARKTGÄNGIGKEIT oder EIGNUNG FÜR EINEN BESTIMMTEN ZWECK."
+      },
+      "licenseLinkTitle": "Vollständige Lizenzbedingungen"
+    },
+    "custodialService": {
+      "title": "Custodial Service",
+      "text": {
+        "1": "Bitte beachte, dass Lightning TipCards ein Custodial Service ist und nicht zur langfristigen Aufbewahrung deiner Sats verwendet werden sollte. Wir empfehlen dringend, keine erheblichen Beträge für längere Zeit auf einer TipCard zu lassen.",
+        "2": "Falls wir unseren Dienst jemals einstellen müssen, werden wir deine Sats noch 6 Monate lang zur Auszahlung verfügbar halten und danach den verbleibenden Betrag an eine oder mehrere Organisationen unserer Wahl spenden.",
+        "3": "Wenn du TipCards mit deiner eigenen Lightning-Node nutzen möchtest, kannst du unseren Open-Source-Code verwenden und deine eigene Instanz der Lightning TipCards einrichten."
+      }
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Servus!",
+    "allMySets": "Alle meine Sets"
   }
 }

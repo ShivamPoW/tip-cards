@@ -1,39 +1,35 @@
-import fs from 'fs'
-import { generateKeyPair, importPKCS8, type KeyLike, SignJWT, exportPKCS8 } from 'jose'
+import assert from 'assert'
+import axios from 'axios'
+import crypto from 'crypto'
 
-const FILENAME = 'lnurl.auth.pem'
-const alg = 'RS256'
+import { AccessTokenPayload } from '@shared/data/auth/index.js'
+import JwtValidator from '@shared/modules/Jwt/JwtValidator.js'
+import JwtKeyPairHandler from '@shared/modules/Jwt/JwtKeyPairHandler.js'
 
-let privateKey: KeyLike
+import { EXPRESS_PORT, JWT_AUTH_ISSUER } from '@backend/constants.js'
 
-const loadPrivateKey = async () => {
-  try {
-    if (fs.existsSync(FILENAME)) {
-      const data = fs.readFileSync(FILENAME, 'utf8')
-      privateKey = await importPKCS8(data, alg)
-    } else {
-      const keys = await generateKeyPair(alg)
-      privateKey = keys.privateKey
-      const pkcs8Pem = await exportPKCS8(privateKey)
-      fs.writeFileSync(FILENAME, pkcs8Pem)
-    }
-  } catch (error) {
-    console.error
+const PUBLIC_KEY_API = `http://localhost:${EXPRESS_PORT}/auth/api/publicKey`
+
+let jwtValidator: JwtValidator | null = null
+
+const getJwtValidator = async (): Promise<JwtValidator> => {
+  if (jwtValidator == null) {
+    const response = await axios(PUBLIC_KEY_API)
+    const publicKey = await JwtKeyPairHandler.convertPublicKeyToKeyLike({
+      publicKeyAsString: response.data.data,
+    })
+    assert(publicKey instanceof crypto.KeyObject, `Could not load publicKey from ${PUBLIC_KEY_API}`)
+    jwtValidator = new JwtValidator(publicKey, JWT_AUTH_ISSUER)
   }
-}
-loadPrivateKey()
-
-const createJWT = async (key: string) => {
-  return new SignJWT({ key })
-    .setProtectedHeader({ alg })
-    .setIssuedAt()
-    .setIssuer('tipcards:auth')
-    .setAudience('tipcards')
-    .setExpirationTime('24h')
-    .sign(privateKey)
+  return jwtValidator
 }
 
-export {
-  createJWT,
-  loadPrivateKey,
+/**
+ * @throws jose errors
+ * @throws ZodError
+ */
+export const validateJwt = async (jwt: string, audience: string): Promise<AccessTokenPayload> => {
+  const jwtValidator = await getJwtValidator()
+  const payload = await jwtValidator.validate(jwt, audience)
+  return AccessTokenPayload.parse(payload)
 }

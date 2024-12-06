@@ -1,22 +1,181 @@
 import axios from 'axios'
-import express from 'express'
+import { Router, type Request, type Response } from 'express'
 
+import type { AccessTokenPayload } from '@shared/data/auth/index.js'
+import { Set as SetApi, type Settings } from '@shared/data/api/Set.js'
+import { ErrorCode, ErrorWithCode } from '@shared/data/Errors.js'
+
+import type { Set as SetRedis } from '@backend/database/deprecated/data/Set.js'
 import {
-  createCard, getSetById, createSet, deleteSet,
-  deleteCard, getCardByHash,
-} from '../services/database'
-import hashSha256 from '../services/hashSha256'
-import { checkIfSetInvoiceIsPaid } from '../services/lnbitsHelpers'
-import { TIPCARDS_API_ORIGIN, LNBITS_INVOICE_READ_KEY } from '../constants'
-import type { Card } from '../../../src/data/Card'
-import type { Set } from '../../../src/data/Set'
-import { ErrorCode, ErrorWithCode } from '../../../src/data/Errors'
-import { LNBITS_ORIGIN } from '../../../src/constants'
+  getSetById, getSetsByUserId,
+  createSet, deleteSet, updateSet,
+  createCard, deleteCard, getCardByHash,
+} from '@backend/database/deprecated/queries.js'
+import hashSha256 from '@backend/services/hashSha256.js'
+import { checkIfSetInvoiceIsPaid } from '@backend/services/lnbitsHelpers.js'
+import { TIPCARDS_API_ORIGIN, LNBITS_INVOICE_READ_KEY, LNBITS_ORIGIN } from '@backend/constants.js'
 
-const router = express.Router()
+import { authGuardAccessToken } from './middleware/auth/jwt.js'
 
-router.get('/:setId', async (req: express.Request, res: express.Response) => {
-  let set: Set | null = null
+const router = Router()
+
+/**
+ * get all sets from the current user
+ */
+router.get('/', authGuardAccessToken, async (_, res) => {
+  const accessTokenPayload: AccessTokenPayload = res.locals.accessTokenPayload
+  if (accessTokenPayload == null) {
+    res.status(401).json({
+      status: 'error',
+      message: 'Authorization payload missing.',
+      code: ErrorCode.AccessTokenMissing,
+    })
+    return
+  }
+  const userId: string = accessTokenPayload.userId
+
+  // load set from database
+  let sets: SetRedis[] | null = null
+  try {
+    sets = await getSetsByUserId(userId)
+  } catch (error: unknown) {
+    console.error(ErrorCode.UnknownDatabaseError, error)
+    res.status(500).json({
+      status: 'error',
+      message: 'An unexpected error occured. Please try again later or contact an admin.',
+      code: ErrorCode.UnknownDatabaseError,
+    })
+    return
+  }
+
+  res.json({
+    status: 'success',
+    data: sets ? sets.map((set) => SetApi.parse(set)) : null,
+  })
+})
+
+router.post('/:setId', authGuardAccessToken, async (req, res) => {
+  const accessTokenPayload: AccessTokenPayload = res.locals.accessTokenPayload
+  if (accessTokenPayload == null) {
+    res.status(401).json({
+      status: 'error',
+      message: 'Authorization payload missing.',
+      code: ErrorCode.AccessTokenMissing,
+    })
+    return
+  }
+  const userId: string = accessTokenPayload.userId
+  let settings: Settings | null = null
+  let created: number | null = null
+  let date: number | null = null
+  try {
+    ({ settings, created, date } = req.body)
+  } catch (error) {
+    console.error(error)
+  }
+
+  let set: SetRedis | null = null
+  // load set from database
+  try {
+    set = await getSetById(req.params.setId)
+  } catch (error: unknown) {
+    console.error(ErrorCode.UnknownDatabaseError, error)
+    res.status(500).json({
+      status: 'error',
+      message: 'An unexpected error occured. Please try again later or contact an admin.',
+      code: ErrorCode.UnknownDatabaseError,
+    })
+    return
+  }
+
+  // create a new set
+  if (set == null) {
+    set = {
+      id: req.params.setId,
+      userId,
+      invoice: null,
+      settings,
+      created: Math.floor(+ new Date() / 1000),
+      date: Math.floor(+ new Date() / 1000),
+      text: '',
+      note: '',
+    }
+    if (created != null) {
+      set.created = created
+    }
+    if (date != null) {
+      set.date = date
+    }
+
+    try {
+      await createSet(set)
+    } catch (error) {
+      console.error(ErrorCode.UnknownDatabaseError, error)
+      res.status(500).json({
+        status: 'error',
+        message: 'An unexpected error occured. Please try again later or contact an admin.',
+        code: ErrorCode.UnknownDatabaseError,
+      })
+      return
+    }
+    res.json({
+      status: 'success',
+      data: SetApi.parse(set),
+    })
+    return
+  }
+
+  // check if the set belongs to the current user
+  if (set.userId != null && set.userId !== userId) {
+    res.status(403).json({
+      status: 'error',
+      message: 'This set belongs to another user.',
+      code: ErrorCode.SetBelongsToAnotherUser,
+    })
+    return
+  }
+
+  // update set
+  set.userId = userId
+  if (settings != null) {
+    set.settings = settings
+  }
+  if (set.created == null) {
+    if (created != null) {
+      set.created = created
+    } else if (set.date != null) {
+      set.created = set.date
+    } else if (date != null) {
+      set.created = date
+    } else {
+      set.created = Math.floor(+ new Date() / 1000)
+    }
+  }
+  if (date != null) {
+    set.date = date
+  } else {
+    set.date = Math.floor(+ new Date() / 1000)
+  }
+  try {
+    await updateSet(set)
+  } catch (error) {
+    console.error(ErrorCode.UnknownDatabaseError, error)
+    res.status(500).json({
+      status: 'error',
+      message: 'An unexpected error occured. Please try again later or contact an admin.',
+      code: ErrorCode.UnknownDatabaseError,
+    })
+    return
+  }
+
+  res.json({
+    status: 'success',
+    data: SetApi.parse(set),
+  })
+})
+
+router.get('/:setId', async (req, res) => {
+  let set: SetRedis | null = null
 
   // load set from database
   try {
@@ -62,31 +221,43 @@ router.get('/:setId', async (req: express.Request, res: express.Response) => {
 
   res.json({
     status: 'success',
-    data: set,
+    data: SetApi.parse(set),
   })
 })
 
-router.post('/invoice/:setId', async (req: express.Request, res: express.Response) => {
+router.post('/invoice/:setId', async (req, res) => {
   // amount in sats
   let amountPerCard: number | undefined = undefined
   let text = ''
   let note = ''
   let cardIndices: number[] = []
   try {
-    ({ amountPerCard, text, note, cardIndices } = req.body)
+    amountPerCard = req.body.amountPerCard
+    cardIndices = req.body.cardIndices
+    text = req.body.text || ''
+    note = req.body.note || ''
   } catch (error) {
     console.error(error)
   }
-  if (amountPerCard == null || amountPerCard < 21 || cardIndices.length < 1) {
+  if (amountPerCard == null || amountPerCard < 20 || amountPerCard > 2200000) {
     res.status(400).json({
       status: 'error',
-      message: 'Invalid input.',
+      message: 'Invalid amountPerCard, has to be between 21 and 2,100,000 sats.',
+      code: ErrorCode.InvalidInput,
+    })
+    return
+  }
+  if (cardIndices.length < 1) {
+    res.status(400).json({
+      status: 'error',
+      message: 'Invalid input, cardIndices missing.',
+      code: ErrorCode.InvalidInput,
     })
     return
   }
 
   // check if set/invoice already exists
-  let set: Set | null = null
+  let set: SetRedis | null = null
   try {
     set = await getSetById(req.params.setId)
   } catch (error) {
@@ -103,11 +274,13 @@ router.post('/invoice/:setId', async (req: express.Request, res: express.Respons
       res.status(400).json({
         status: 'error',
         message: 'Set is already funded.',
+        code: ErrorCode.SetAlreadyFunded,
       })
-    }  else {
+    } else {
       res.status(400).json({
         status: 'error',
         message: 'Set invoice already exists.',
+        code: ErrorCode.SetInvoiceAlreadyExists,
       })
     }
     return
@@ -121,7 +294,7 @@ router.post('/invoice/:setId', async (req: express.Request, res: express.Respons
     const response = await axios.post(`${LNBITS_ORIGIN}/api/v1/payments`, {
       out: false,
       amount,
-      memo: 'Fund your Lightning Tip Card',
+      memo: `Fund ${cardIndices.length} Lightning TipCards`,
       webhook: `${TIPCARDS_API_ORIGIN}/api/set/invoice/paid/${req.params.setId}`,
     }, {
       headers: {
@@ -141,25 +314,39 @@ router.post('/invoice/:setId', async (req: express.Request, res: express.Respons
     })
     return
   }
-  set = {
-    id: req.params.setId,
-    text,
-    note,
-    invoice: {
-      fundedCards: cardIndices,
-      amount,
-      payment_hash,
-      payment_request,
-      created: Math.round(+ new Date() / 1000),
-      paid: null,
-      expired: false,
-    },
+
+  // check if a new set has to be created
+  let insertNewSet = false
+  if (set == null) {
+    insertNewSet = true
+    set = {
+      id: req.params.setId,
+      created: Math.floor(+ new Date() / 1000),
+      date: Math.floor(+ new Date() / 1000),
+      text: '',
+      note: '',
+      invoice: null,
+      settings: null,
+      userId: null,
+    }
+  }
+  set.date = Math.floor(+ new Date() / 1000)
+  set.text = text
+  set.note = note
+  set.invoice = {
+    fundedCards: cardIndices,
+    amount,
+    payment_hash,
+    payment_request,
+    created: Math.round(+ new Date() / 1000),
+    paid: null,
+    expired: false,
   }
 
   // persist data
   try {
     await Promise.all(cardIndices.map(async (index) => {
-      const cardHash = await hashSha256(`${req.params.setId}/${index}`)
+      const cardHash = hashSha256(`${req.params.setId}/${index}`)
       await createCard({
         cardHash,
         text,
@@ -173,9 +360,15 @@ router.post('/invoice/:setId', async (req: express.Request, res: express.Respons
         lnurlp: null,
         lnbitsWithdrawId: null,
         used: null,
+        landingPageViewed: null,
+        isLockedByBulkWithdraw: false,
       })
     }))
-    await createSet(set)
+    if (insertNewSet) {
+      await createSet(set)
+    } else {
+      await updateSet(set)
+    }
   } catch (error) {
     console.error(ErrorCode.UnknownDatabaseError, error)
     res.status(500).json({
@@ -187,13 +380,13 @@ router.post('/invoice/:setId', async (req: express.Request, res: express.Respons
   }
   res.json({
     status: 'success',
-    data: set,
+    data: SetApi.parse(set),
   })
 })
 
-router.delete('/invoice/:setId', async (req: express.Request, res: express.Response) => {
+const deleteSetRoute = async (req: Request, res: Response, invoiceOnly = false) => {
   // 1. check if set exists
-  let set: Set | null = null
+  let set: SetRedis | null = null
   try {
     set = await getSetById(req.params.setId)
   } catch (error) {
@@ -205,15 +398,42 @@ router.delete('/invoice/:setId', async (req: express.Request, res: express.Respo
     })
     return
   }
-  if (set?.invoice == null) {
+  if (set == null) {
     res.status(404).json({
       status: 'error',
-      message: `Set not found. Go to /set-funding/${req.params.setId} to create an invoice.`,
+      message: 'Set not found.',
+      code: ErrorCode.SetNotFound,
     })
     return
   }
 
-  // 2. check if invoice is already paid and used
+  // 2. delete set if it has no invoice
+  if (set.invoice == null) {
+    if (invoiceOnly && set.userId != null) {
+      res.json({
+        status: 'success',
+      })
+      return
+    }
+
+    try {
+      await deleteSet(set)
+    } catch (error) {
+      console.error(ErrorCode.UnknownDatabaseError, error)
+      res.status(500).json({
+        status: 'error',
+        message: 'An unexpected error occured. Please try again later or contact an admin.',
+        code: ErrorCode.UnknownDatabaseError,
+      })
+      return
+    }
+    res.json({
+      status: 'success',
+    })
+    return
+  }
+
+  // 3. check if invoice is already paid
   try {
     await checkIfSetInvoiceIsPaid(set)
   } catch (error: unknown) {
@@ -231,7 +451,7 @@ router.delete('/invoice/:setId', async (req: express.Request, res: express.Respo
     })
     return
   }
-  if (set.invoice?.paid != null) {
+  if (invoiceOnly && set.invoice?.paid != null) {
     res.status(400).json({
       status: 'error',
       message: 'This set invoice is already funded and cannot be deleted anymore!',
@@ -240,23 +460,30 @@ router.delete('/invoice/:setId', async (req: express.Request, res: express.Respo
     return
   }
 
-  // 3. delete set+cards in database
+  // 4. delete set+cards in database
   try {
-    // delete all cards
-    await Promise.all(set.invoice.fundedCards.map(async (cardIndex) => {
-      if (set == null) {
-        return
-      }
-      const cardHash = await hashSha256(`${set.id}/${cardIndex}`)
-      const card: Card | null = await getCardByHash(cardHash)
-      if (card?.setFunding == null) {
-        return
-      }
-      await deleteCard(card)
-    }))
+    // delete all unfunded cards
+    if (invoiceOnly && set.invoice?.paid == null) {
+      await Promise.all(set.invoice.fundedCards.map(async (cardIndex) => {
+        if (set == null) {
+          return
+        }
+        const cardHash = hashSha256(`${set.id}/${cardIndex}`)
+        const cardRedis = await getCardByHash(cardHash)
+        if (cardRedis?.setFunding == null) {
+          return
+        }
+        await deleteCard(cardRedis)
+      }))
+    }
 
-    // delete set
-    await deleteSet(set)
+    // delete set or invoice
+    if (invoiceOnly && set.userId != null) {
+      set.invoice = null
+      await updateSet(set)
+    } else {
+      await deleteSet(set)
+    }
   } catch (error) {
     console.error(ErrorCode.UnknownDatabaseError, error)
     res.status(500).json({
@@ -269,11 +496,14 @@ router.delete('/invoice/:setId', async (req: express.Request, res: express.Respo
   res.json({
     status: 'success',
   })
-})
+}
 
-const invoicePaid = async (req: express.Request, res: express.Response) => {
+router.delete('/:setId', (req, res) => deleteSetRoute(req, res))
+router.delete('/invoice/:setId', (req, res) => deleteSetRoute(req, res, true))
+
+const invoicePaid = async (req: Request, res: Response) => {
   // 1. check if set exists
-  let set: Set | null = null
+  let set: SetRedis | null = null
   try {
     set = await getSetById(req.params.setId)
   } catch (error) {
@@ -289,6 +519,7 @@ const invoicePaid = async (req: express.Request, res: express.Response) => {
     res.status(404).json({
       status: 'error',
       message: `Set not found. Go to /set-funding/${req.params.setId} to create an invoice.`,
+      code: ErrorCode.SetNotFound,
     })
     return
   }
@@ -313,11 +544,11 @@ const invoicePaid = async (req: express.Request, res: express.Response) => {
   }
   res.json({
     status: 'success',
-    data: set,
+    data: SetApi.parse(set),
   })
 }
 
-router.get('/invoice/paid/:cardHash', invoicePaid)
-router.post('/invoice/paid/:cardHash', invoicePaid)
+router.get('/invoice/paid/:setId', invoicePaid)
+router.post('/invoice/paid/:setId', invoicePaid)
 
 export default router

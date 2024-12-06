@@ -1,80 +1,78 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import i18n, { LOCALES } from '@/modules/initI18n'
+import { about, type RouteAbout } from '@/router/pages/about'
+import { bulkWithdraw, type RouteBulkWithdraw } from '@/router/pages/bulkWithdraw'
+import { cards, type RouteCards } from '@/router/pages/cards'
+import { dashboard, type RouteDashboard } from '@/router/pages/dashboard'
+import { faqs, type RouteFaqs } from '@/router/pages/faqs'
+import { funding, type RouteFunding } from '@/router/pages/funding'
+import { home, type RouteHome } from '@/router/pages/home'
+import { landing, type RouteLanding } from '@/router/pages/landing'
+import { localStorageSets, type RouteLocalStorageSets } from '@/router/pages/localStorageSets'
+import { setFunding, type RouteSetFunding } from '@/router/pages/setFunding'
+import { sets, type RouteSets } from '@/router/pages/sets'
+import { statistics, type RouteStatistics } from '@/router/pages/statistics'
+import {
+  styleGuide, type RouteStyleGuide,
+  styleGuideComponents, type RouteStyleGuideComponents,
+  styleGuideForms, type RouteStyleGuideForms,
+  styleGuideIcons, type RouteStyleGuideIcons,
+  styleGuideTypographyAndButtons, type RouteStyleGuideTypographyAndButtons,
+} from '@/router/pages/styleGuide'
+import { userAccount, type RouteUserAccount } from '@/router/pages/userAccount'
 
-const PageIndex = () => import('@/pages/PageIndex.vue')
-const PageLanding = () => import('@/pages/PageLanding.vue')
-const PageCards = () => import('@/pages/PageCards.vue')
-const PageFunding = () => import('@/pages/PageFunding.vue')
-const PageSetFunding = () => import('@/pages/PageSetFunding.vue')
-const PageAuthDevelopment = () => import('@/pages/PageAuthDevelopment.vue')
-const PageAbout = () => import('@/pages/PageAbout.vue')
-const PageStatistics = () => import('@/pages/PageStatistics.vue')
+export interface RouteNamedMap {
+  about: RouteAbout,
+  'bulk-withdraw': RouteBulkWithdraw,
+  cards: RouteCards,
+  dashboard: RouteDashboard,
+  faqs: RouteFaqs,
+  funding: RouteFunding,
+  home: RouteHome,
+  landing: RouteLanding,
+  'local-storage-sets': RouteLocalStorageSets,
+  'set-funding': RouteSetFunding,
+  sets: RouteSets,
+  statistics: RouteStatistics,
+  'style-guide': RouteStyleGuide,
+  'style-guide/components': RouteStyleGuideComponents,
+  'style-guide/forms': RouteStyleGuideForms,
+  'style-guide/icons': RouteStyleGuideIcons,
+  'style-guide/typography-and-buttons': RouteStyleGuideTypographyAndButtons,
+  'user-account': RouteUserAccount,
+}
+
+declare module 'vue-router' {
+  interface TypesConfig {
+    RouteNamedMap: RouteNamedMap
+  }
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   scrollBehavior: (to, from) => {
-    if (to.name === from.name) return {}
+    if (to.name === from.name) { return {} }
     return { top: 0 }
   },
   routes: [
-    {
-      path: `/:lang(${Object.keys(LOCALES).join('|')})?`,
-      children: [
-        {
-          path: ':',
-          name: 'home',
-          component: PageIndex,
-        },
-        {
-          path: 'landing',
-          name: 'landing',
-          component: PageLanding,
-          meta: { title: () => i18n.global.t('landing.title') },
-        },
-        {
-          path: 'preview',
-          name: 'preview',
-          component: PageLanding,
-          meta: { title: () => i18n.global.t('landing.titlePreview') },
-        },
-        {
-          path: 'cards/:setId?/:settings?',
-          name: 'cards',
-          component: PageCards,
-          meta: { title: () => false }, // title will be set in the page component
-        },
-        {
-          path: 'funding/:cardHash',
-          name: 'funding',
-          component: PageFunding,
-          meta: { title: () => i18n.global.t('funding.title') },
-        },
-        {
-          path: 'set-funding/:setId/:settings?',
-          name: 'set-funding',
-          component: PageSetFunding,
-          meta: { title: () => i18n.global.t('setFunding.title') },
-        },
-        {
-          path: 'about',
-          name: 'about',
-          component: PageAbout,
-          meta: { title: () => 'About' },
-        },
-        {
-          path: 'auth',
-          name: 'auth',
-          component: PageAuthDevelopment,
-        },
-        {
-          path: 'statistics',
-          name: 'statistics',
-          component: PageStatistics,
-          meta: { title: () => 'Statistics' },
-        },
-      ],
-    },
+    about,
+    bulkWithdraw(() => router),
+    cards,
+    dashboard,
+    faqs,
+    funding,
+    home,
+    landing,
+    localStorageSets,
+    setFunding(() => router),
+    sets,
+    statistics,
+    styleGuide,
+    styleGuideComponents,
+    styleGuideForms,
+    styleGuideIcons,
+    styleGuideTypographyAndButtons,
+    userAccount,
   ],
 })
 
